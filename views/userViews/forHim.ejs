@@ -43,11 +43,14 @@
 
           <div class="left">
             <li class="nav-item p-1">
+              <% if (isLoggedIn) { %>
+
               <div class="round bg-black p-">
                 <a class="nav-link" href="#!">
                   <i class="fa-regular fa-heart text-light"></i>
                 </a>
               </div>
+              <% } %>
 
             </li>
             <li class="nav-item p-1">
@@ -59,11 +62,13 @@
 
             </li>
             <li class="nav-item p-1">
+              <% if (isLoggedIn) { %>
               <div class="round bg-black">
                 <a class="nav-link" href="#!">
                   <i class="fa-solid fa-cart-shopping text-light"></i>
                 </a>
               </div>
+              <% } %>
 
             </li>
           </div>

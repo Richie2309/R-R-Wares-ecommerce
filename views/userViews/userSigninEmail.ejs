@@ -38,6 +38,11 @@
                       </p>
                     </div> -->
                   <%# } %>
+                  <% if (signinfo.isBlock) { %>
+                    <div class="alert alert-danger" role="alert">
+                      <i class="fas fa-exclamation-circle"></i> This Account Is Blocked
+                    </div>
+                  <% } %>
                   <form class="mx-1 mx-md-4" action="/userSigninEmail" method="post">
 
                     <div class="d-flex flex-row align-items-center mb-4">

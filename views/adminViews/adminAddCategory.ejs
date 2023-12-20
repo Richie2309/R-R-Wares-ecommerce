@@ -40,9 +40,13 @@
         <div class="container w-50">
             <h1>Add Category</h1><br>
             <div class="row h-100 d-flex align-items-center bg-light">
-                <form action="" class="text-center p-4 border bg-white border-0" style="font-family: 'Bai Jamjuree', 'sans-serif';">
+                <form action="/adminAddCategory" method="post" class="text-center p-4 border bg-white border-0" style="font-family: 'Bai Jamjuree', 'sans-serif';">
                     <label for="name" class="d-block fs-5 head text-start bg-light">Category Name</label>
-                    <input class="form-control" type="text" name="name">
+                    <input class="form-control" type="text" name="name"  />
+                    <% if (err) { %>
+                        <p class="err p-0 d-block text-danger"><%= err %></p>
+                      <% } %>
+
                     <div class="mt-3 bg-light">
                         <button type="submit" class="btn btn-dark">Add Category</button>
                     </div>

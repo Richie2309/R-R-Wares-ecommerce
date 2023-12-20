@@ -37,9 +37,9 @@
             </div>
         </div>
 
-
-        <form action="/adminAddProduct" method="post">
+        <form action="/adminAddProduct" enctype="multipart/form-data" method="post" >
             <div class="form row p-1">
+                <h1>Add Product</h1><br>
 
                 <div class="col-md-6">
                     <label for="validateProductName" class="form-label">Product Name</label>
@@ -85,14 +85,17 @@
                 
                 <div class="col-md-6">
                     <label for="validateCategory" class="form-label">Categories</label>
-                    <select id="validateCategory" class="form-select form-control">
+                    <select id="validateCategory" class="form-select form-control" name="category">
                         <option value="1">Men</option>
                         <option value="2">Woman</option>
                     </select>
                 </div>
                 <div class="col-md-12 m-3  d-flex  justify-content-center">
                     <div class="col-md-6">
-                        <input class="form-control" type="file" id="formFileMultiple" multiple>
+                        <input class="form-control" type="file" id="formFileMultiple" name="images" multiple>
+                        <p class="text-danger">
+                            <%=product?.files %>
+                          </p>
                     </div>
                 </div>
 

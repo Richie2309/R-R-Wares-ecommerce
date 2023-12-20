@@ -36,15 +36,15 @@ module.exports = {
             }
             const data = await Userdb.findOne({ _id: req.session.isUserAuth });
 
-            if (!data.userStatus) {
+            if (!data || !data.userStatus) {
                 req.session.userBlockedMesg = true;
                 delete req.session.isUserAuth;
-                return res.status(200).redirect('/userLogin');
+                return res.status(200).redirect('/userSigninEmail');
             }
             next();
         } catch (err) {
             console.log('Middle ware err', err);
-            res.status(401).send('You are block');
+            res.status(401).send('You are blocked');
         }
     },
     isUserLoggedIn: (req, res, next) => {
@@ -54,6 +54,5 @@ module.exports = {
         } else {
             res.status(200).redirect('/userSigninEmail');
         }
-
     }
 } 

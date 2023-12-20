@@ -3,14 +3,16 @@ const adminPassword = `123`;
 
 const mongodb = require("mongoose");
 const Userdb = require("../../model/userModel/userModel");
-const Productdb = require('../../model/adminModel/productModel').productSchema
+const Productdb = require('../../model/adminModel/productModel')
 const UnlistedProductdb = require('../../model/adminModel/productModel').unlistedProductSchema
 
 
 const fs = require("fs");
 const path = require("path");
+const Categorydb = require("../../model/adminModel/categoryModel");
 
 
+//Sign in and out
 exports.adminLogout = (req, res) => {
   req.session.destroy((err) => {
     if (err) {
@@ -44,74 +46,142 @@ exports.adminSignin = (req, res) => {
   }
 }
 
+
+// Category management
+exports.adminAddCategory = async (req, res) => {
+  try {
+    if (!req.body.name) {
+      req.session.errMesg = `This field is required`
+      return res.status(200).redirect('/adminAddCategory')
+    }
+    const newCat = new Categorydb(req.body);
+    const result = await newCat.save();
+    res.status(200).redirect("/adminCategoryManage");
+  } catch (err) {
+    req.session.errMesg = `Category already exist `;
+    res.status(401).redirect("/adminAddCategory");
+  }
+}
+
+exports.getCategory= async (req, res) => {
+  if (Number(req.params.value) === 1) {
+    const result = await Categorydb.find({ status: true });
+    res.send(result);
+  } else {
+    const result = await Categorydb.find({ status: false });
+    res.send(result);
+  }
+}
+
+exports.adminUnlistedCategory= async (req, res) => {
+  await Categorydb.updateOne(
+    { _id: req.params.id },
+    { $set: { status: false } }
+  );
+  res.status(200).redirect("/adminCategoryManage");
+}
+
+exports.adminRestoreCategory= async (req, res) => {
+  await Categorydb.updateOne(
+    { _id: req.params.id },
+    { $set: { status: true } }
+  );
+  res.status(200).redirect("/adminUnlistedCategory");
+}
+
+//Product Management
 exports.adminAddProducts = async (req, res) => {
+  
   const { pName, brand, category, pDescription, price, units } = req.body
-  const files=req.file
-    try {
-      if (!pName) {
-        req.session.pName = "This Field is required";
-      }
-
-      if (!pDescription) {
-        req.session.pDescription = "This Field is required";
-      }
-      if (!category) {
-        req.session.category = "This filed is requierd"
-      }
-      if (!price) {
-        req.session.fPrice = "This Field is required";
-      }
-      if (!units) {
-        req.session.units = "This Field is required";
-      }
-      if (req.files.length === 0) {
-        req.session.files = "This Field is required";
-      }
-
-      if (
-        req.session.pName ||
-        req.session.pDescription ||
-        req.session.category ||
-        req.session.price ||
-        req.session.units ||
-        req.session.files
-      ) {
-        req.session.productInfo = req.body;
-        return res.status(401).redirect("/adminAddProduct");
-      }
-      const uploadImg = files.map((value) => `/uploadedImages/${value.filename}`)
-      const newProduct = new Productdb({
-        pName: pName,
-        brand: brand,
-        category: category,
-        pDescription: pDescription,
-        price: price,
-        units: units,
-        images: uploadImg,
-      })
-      const data = await newProduct.save();
-      res.redirect("/adminHome");
-    }catch (error) {
-      console.error("Error:", error);
-      res.status(500).send("Internal server error");
+  const files = req.files  
+  try {
+    if (!pName) {
+      req.session.pName = "This Field is required";
     }
-  }
-
-  exports.getAllUser= async (req, res) => {
-    try {
-      const result = await Userdb.find();
-      res.send(result);
-    } catch (err) {
-      console.log(err);
-      res.status(401).send('Internal server error');
+    if (!brand) {
+      req.session.brand = "This Field is required";
     }
-  }
-
-  exports.adminUserStatus= async (req, res) => {
-    if(!Number(req.params.block)){
-      await Userdb.updateOne({_id: req.params.id}, {$set: {userStatus: false, userLstatus: false}});
-      return res.status(200).redirect('/adminUserManage');
+    if (!pDescription) {
+      req.session.pDescription = "This Field is required";
     }
-    await Userdb.updateOne({_id: req.params.id}, {$set: {userStatus: true}});
-    res.status(200).redirect('/adminUserManage');
+    if (!category) {
+      req.session.category = "This filed is requierd"
+    }
+    if (!price) {
+      req.session.price = "This Field is required";
+    }
+    if (!units) {
+      req.session.units = "This Field is required";
+    }
+    if(!files){
+      req.session.files="This field is required"
+    }
+    if (req.files.length === 0) {
+      req.session.files = "This Field is required";
+    }
+
+    if (
+      req.session.pName ||
+      req.session.pDescription ||
+      req.session.category ||
+      req.session.price ||
+      req.session.units ||
+      req.session.files
+    ) {
+      req.session.productInfo = req.body;
+      console.log('all fields are required')
+      return res.status(401).redirect("/adminAddProduct");
+    }
+    // Extract filenames from the uploaded files
+    const uploadImg = files.map((value) => {return "/uploads/"+ value.filename});
+    console.log(uploadImg)
+        // Create a new product using the Productdb model
+    const newProduct = new Productdb({
+      pName: pName,
+      brand: brand,
+      category: category,
+      pDescription: pDescription,
+      price: price,
+      units: units,
+      images: uploadImg,
+    })
+    const data = await newProduct.save();
+    console.log(data)
+    res.redirect("/adminHome");
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).send("Internal server error");
   }
+}
+
+exports.showProduct=async(req,res)=>{
+  try{
+    const products=await Productdb.find({})
+    console.log(products +"kuuuu");
+    res.send(products);
+  } catch (err) {
+    console.error('Error fetching products:', err);
+    res.status(500).send('Internal server error');
+  }
+}
+
+
+//User Management
+exports.getAllUser = async (req, res) => {
+  try {
+    const result = await Userdb.find();
+    res.send(result);
+  } catch (err) {
+    console.log(err);
+    res.status(401).send('Internal server error');
+  }
+}
+
+exports.adminUserStatus = async (req, res) => {
+  if (!Number(req.params.block)) {
+    await Userdb.updateOne({ _id: req.params.id }, { $set: { userStatus: false, userLstatus: false } });
+    return res.status(200).redirect('/adminUserManage');
+  }
+  await Userdb.updateOne({ _id: req.params.id }, { $set: { userStatus: true } });
+  res.status(200).redirect('/adminUserManage');
+}

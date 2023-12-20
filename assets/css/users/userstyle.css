@@ -37,3 +37,15 @@ a {
 .errDiv{
 	border: 1px solid red;
 }
+.resendbtn {
+    /* display: none; */
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: bold;
+    border-radius: 7px;
+    width: 80px;
+    height: 32px;
+    background: #000;
+    border: transparent;
+    font-family: 'Bai Jamjuree', 'sans-serif'
+  }

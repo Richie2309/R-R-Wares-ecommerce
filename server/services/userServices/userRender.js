@@ -1,16 +1,18 @@
 const axios = require('axios');
 
 exports.homepage = (req, res) => {
-    res.render('userViews/homepage')
+    res.render('userViews/homepage', { isLoggedIn: req.session.isUserAuth });
 }
 
 exports.forHim = (req, res) => {
-    res.render('userViews/forHim')
+    console.log(req.session.isLoggedIn);
+    res.render('userViews/forHim', { isLoggedIn: req.session.isUserAuth });
 }
 
 exports.forHer = (req, res) => {
-    res.render('userViews/forHer')
+    res.render('userViews/forHer', { isLoggedIn: req.session.isUserAuth });
 }
+
 
 // exports.userSignup = (req, res) => {
 //     res.redirect('/userSignupOtpVerify');
@@ -26,12 +28,14 @@ exports.userSignupEmailVerify = async (req, res) => {
 }
 
 exports.userSignupOtpVerify = async (req, res) => {
-    res.render('userViews/userSignupOtpVerify', { email: req.session.verifyEmail, errorMesg: req.session.err }, (err, html) => {
+ 
+    res.render('userViews/userSignupOtpVerify', { email: req.session.verifyEmail, errorMesg: req.session.err ,  rTime: req.session.rTime}, (err, html) => {
         if (err) {
             console.log(err);
             return res.status(500).send('Internal Error');
         }
         delete req.session.err;
+        delete req.session.rTime;
         res.send(html)
     })
 }
@@ -52,7 +56,7 @@ exports.userSignup = (req, res) => {
 }
 
 exports.userSigninEmail = (req, res) => {
-    const signinfo = { name: req.session.fName, pass: req.session.pass, noUser: req.session.noUser, wrongPass: req.session.wrongPass }
+    const signinfo = { name: req.session.fName, pass: req.session.pass, noUser: req.session.noUser, wrongPass: req.session.wrongPass, isBlock: req.session.userBlockedMesg }
     res.render('userViews/userSigninEmail', { signinfo: signinfo }, (err, html) => {
         if (err) {
             console.log(err);
@@ -61,6 +65,7 @@ exports.userSigninEmail = (req, res) => {
         delete req.session.pass;
         delete req.session.noUser;
         delete req.session.wrongPass;
+        delete req.session.userBlockedMesg;
         res.send(html)
     })
 }

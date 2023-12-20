@@ -37,7 +37,7 @@
                 </a>
             </div>
         </div>
-        
+
         <div class="container-fluid">
             <h1>Unlisted Category</h1><br>
             <div class="d-flex">
@@ -54,15 +54,27 @@
                     <div class="main-box clearfix">
                         <div class="table-responsive hh">
                             <table class="table user-list">
-                                
-                                <tbody>
-                                    <tr>
-                                        
-                                       <td class="align-middle text-center">1</td>
-                                       <td  class="align-middle text-center">Women</td>
-                                       <td  class="align-middle text-center"><p class="bg-light m-0 d-flex justify-content-center"><a href=""><i class="fa-solid fa-rotate fs-5 bg-light"></i></a></p></td>
-                                    </tr>
 
+                                <tbody>
+                                    <% for(let i=0;i<category.length;i++){ %>
+                                        <tr>
+
+                                            <td class="align-middle text-center">
+                                                <%= i+1 %>
+                                            </td>
+                                            <td class="align-middle text-center">
+                                                <%= category[i].name %>
+                                            </td>
+                                            <td class="align-middle text-center">
+                                                <p class="bg-light m-0 d-flex justify-content-center"><a href="#"
+                                                        class="restore-category" data-id="<%= category[i]._id %>"><i
+                                                            class="fa-solid fa-rotate fs-5 bg-light"></i></a></p>
+                                            </td>
+                                        </tr>
+                                        <% } %>
+                                            <% if(category.length==0){ %>
+                                                <h3 class="text-center">No Unlisted Category</h3>
+                                                <% } %>
                                 </tbody>
                             </table>
                         </div>
@@ -71,49 +83,53 @@
             </div>
         </div>
     </div>
-    <!-- <section id="content">
-        <main>
-            <div class="table-data justify-content-center">
-                <div class="order">
-                    <%# for( let i=0; i < category.length; i++ ) { %>
-                       
-                    <div class="produts">
-                            <div class="productImg d-flex align-items-center justify-content-between">
-                                <div class="proImg d-flex gap-5 align-items-center">
-                                    <div class="d-flex align-items-center justify-content-center">
-                                        <span>
-                                            <%#= i + 1 %>
-                                        </span>
-                                    </div>
-                                    <div class="description d-flex align-items-center">
-                                        <div>
-                                            <p class="cName m-0 p-0 fs-6">
-                                                <%#= category[i].name %>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="actions d-flex align-items-center">
-                                    <a onclick="showPopUp('<%#= category[i]._id %>', '<%#= category[i].name %>')"
-                                        title="Delete Category">
-                                        <svg width="15" height="19" viewBox="0 0 15 19" fill="none"
-                                            xmlns="http://www.w3.org/2000/svg">
-                                            <path
-                                                d="M1.07143 16.8889C1.07143 18.05 2.03571 19 3.21429 19H11.7857C12.9643 19 13.9286 18.05 13.9286 16.8889V4.22222H1.07143V16.8889ZM15 1.05556H11.25L10.1786 0H4.82143L3.75 1.05556H0V3.16667H15V1.05556Z"
-                                                fill="black" />
-                                        </svg>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        <%# } %>
-                            <%# if (category.length===0) { %>
-                                <div class="text-center">\(^Д^)/ <br>No Category.</div>
-                                <%# } %>
-                </div>
-            </div>
-        </main>
-    </section> -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const restoreButtons = document.querySelectorAll('.restore-category');
+
+            restoreButtons.forEach(button => {
+                button.addEventListener('click', function (event) {
+                    event.preventDefault();
+
+                    const categoryId = this.getAttribute('data-id');
+                    const trElement = this.closest('tr');
+
+                    // Make an AJAX request to update the category status to true
+                    fetch(`/adminRestoreCategory/${categoryId}`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            // Remove the table row on success
+                            trElement.remove();
+                            location.reload()
+
+                            // Redirect to the adminCategoryManage page if there are no unlisted categories left
+                            if (document.querySelectorAll('.restore-category').length === 0) {
+                                window.location.href = "/adminCategoryManage";
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+
+                        }).finally(() => {
+                            // Reload the page after the request is complete (success or error)
+                            window.location.href = "/adminUnlistedCategory";
+                        });
+                });
+            });
+
+        });
+    </script>
+ 
 </body>
 
 </html>

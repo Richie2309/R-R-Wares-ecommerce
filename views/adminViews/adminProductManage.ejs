@@ -40,6 +40,7 @@
 		</div>
 
 		<div class="container-fluid">
+			<h1>Products</h1><br>
 			<div class="manageOptions">
 				<a href="/adminAddProduct" class="bg-black p-2 rounded-1 text-light text-decoration-none">
 					Add Product
@@ -71,32 +72,32 @@
 									</tr>
 								</thead>
 								<tbody>
+									<% for (let i = 0; i < products.length                                   ; i++) { %>
 									<tr>
 										<td class="text-center productCol">
 											<div class="d-flex bg-light">
 												<div class="product-image">
-													<img src="/img/fhim.jpg" alt="Your Product Image"
+													<img src="/img/fhim.jpg" alt="roduct Image"
 														class="img rounded-2">
 												</div>
 												<div class="product-info bg-light">
-													<h2 class="bg-light">Saint Honore</h2>
-													<p class="bg-light">MC891201 1ASQU Water-Resistant Chronograph Watch
-													</p>
+													<h2 class="bg-light"><%= products[i].pName %></h2>
+													<p class="bg-light"><%= products[i].pDescription %></p>
 												</div>
 											</div>
 										</td>
 										<td class="text-center vertical-center">
-											<span class="bg-light">1</span>
+											<span class="bg-light"><%= products[i].units %></span>
 										</td>
 										<td class="text-center vertical-center">
-											<span class="bg-light">₹500,000</span>
+											<span class="bg-light">₹<%= products[i].price %></span>
 										</td>
 										<td class="text-center vertical-center">
 											<p class="bg-light"><i class="fa-regular fa-pen-to-square bg-light"></i></p>
 											<p class="bg-light"><i class="fa-solid fa-trash fs-5 bg-light p-lg-3"></i></p>
 										</td>
 									</tr>
-
+									<% } %>
 								</tbody>
 							</table>
 						</div>
@@ -108,46 +109,3 @@
 </body>
 
 </html>
-
-
-
-<!-- 
-<div class="container-fluid">
-	<div class="row">
-		<div class="col-lg-12">
-			<div class="main-box clearfix">
-				<div class="table-responsive hh">
-					<table class="table user-list">
-						<thead>
-							<tr>
-								<th class="text-center"><span class="bg-white">User</span></th>
-								<th class="text-center"><span class="bg-white">Status</span></th>
-								<th class="text-center"><span class="bg-white">Email</span></th>
-								<th>&nbsp;</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td class="text-center">
-									<p class="bg-white">Mila Kunis</p>
-								</td>
-
-								<td class="text-center">
-									<span class="label label-default bg-white">Inactive</span>
-								</td>
-								<td class="text-center">
-									<a href="#" class="bg-white">mila@kunis.com</a>
-								</td>
-								<td style="width: 20%;" class="class=">
-
-									<button type="button" class="btn btn-warning w-auto me-1 mb-1">Block</button>
-								</td>
-							</tr>
-
-						</tbody>
-					</table>
-				</div>
-			</div>
-		</div>
-	</div>
-</div> -->

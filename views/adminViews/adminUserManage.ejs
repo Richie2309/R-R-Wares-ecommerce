@@ -41,6 +41,7 @@
 		</div>
 
 		<div class="container-fluid">
+			<h1>Users</h1><br>
 			<div class="row">
 				<div class="col-lg-12">
 					<div class="main-box clearfix">
@@ -48,6 +49,7 @@
 							<table class="table user-list">
 								<thead>
 									<tr>
+										<th class="text-center"><span class="bg-white">No.</span></th>
 										<th class="text-center"><span class="bg-white">User</span></th>
 										<th class="text-center"><span class="bg-white">Status</span></th>
 										<th class="text-center"><span class="bg-white">Email</span></th>
@@ -55,8 +57,13 @@
 									</tr>
 								</thead>
 								<tbody>
-									<% for(let i=0;i<users.length;i++){ %>
+									<% for(let i=0;i<users.length;i++){ %> 
 										<tr>
+											<td class="text-center">
+												<p class="bg-white">
+													<%= i+1 %>
+												</p>
+											</td>
 											<td class="text-center">
 												<p class="bg-white">
 													<%= users[i].fullName %>
@@ -75,7 +82,7 @@
 											</td>
 											<td class="align-items-center">
 
-												<a href="/adminUserStaus/<%= users[i]._id %>/<%= users[i].userStatus?'0':'1' %>"
+												<a href="/adminUserStatus/<%= users[i]._id %>/<%= users[i].userStatus?'0':'1' %>"
 													id="toggle" class="toggle-button">
 													<span
 														class="status completed blockUnblock <%= users[i].userStatus?'red':'green' %>">
