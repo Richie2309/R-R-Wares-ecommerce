@@ -10,7 +10,7 @@
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <link rel="stylesheet" href="/css/admins/adminhome.css">
+    <link rel="stylesheet" href="/css/admins/adminAddProduct.css">
 </head>
 
 <body>
@@ -37,7 +37,7 @@
             </div>
         </div>
 
-        <form action="/adminAddProduct" enctype="multipart/form-data" method="post" >
+        <form action="/adminAddProduct" enctype="multipart/form-data" method="post">
             <div class="form row p-1">
                 <h1>Add Product</h1><br>
 
@@ -46,7 +46,7 @@
                     <input type="text" class="form-control" name="pName" id="validateProductName">
                     <p class="text-danger">
                         <%=product?.pName %>
-                      </p>
+                    </p>
                     <small class="text-danger"></small>
                 </div>
                 <div class="col-md-6">
@@ -54,16 +54,16 @@
                     <input type="text" class="form-control" name="brand" id="validatebrand">
                     <p class="text-danger">
                         <%=product?.brand %>
-                      </p>
+                    </p>
                     <small class="text-danger"></small>
                 </div>
-                
+
                 <div class="col-6">
                     <label for="validateCaseShape" class="form-label">Product Details</label>
                     <input type="text" class="form-control larger" name="pDescription" id="validateCaseShape">
                     <p class="text-danger">
                         <%=product?.pDescription %>
-                      </p>
+                    </p>
                     <small class="text-danger"></small>
                 </div>
                 <div class="col-md-2">
@@ -71,23 +71,26 @@
                     <input type="number" class="form-control" name="price" id="validatePrice">
                     <p class="text-danger">
                         <%=product?.price %>
-                      </p>
-                      <small class="text-danger"></small>
+                    </p>
+                    <small class="text-danger"></small>
                 </div>
                 <div class="col-md-2">
                     <label for="validateOffer" class="form-label">Units</label>
                     <input type="number" class="form-control" name="units" id="validateOffer">
                     <p class="text-danger">
                         <%=product?.units %>
-                      </p>
+                    </p>
                     <small class="text-danger"></small>
                 </div>
-                
+
                 <div class="col-md-6">
                     <label for="validateCategory" class="form-label">Categories</label>
                     <select id="validateCategory" class="form-select form-control" name="category">
-                        <option value="1">Men</option>
-                        <option value="2">Woman</option>
+                        <% for(let i=0;i<category.length;i++){ %>
+                            <option value="<%= category[i].name %>">
+                                <%= category[i].name %>
+                            </option>
+                            <% } %>
                     </select>
                 </div>
                 <div class="col-md-12 m-3  d-flex  justify-content-center">
@@ -95,11 +98,16 @@
                         <input class="form-control" type="file" id="formFileMultiple" name="images" multiple>
                         <p class="text-danger">
                             <%=product?.files %>
-                          </p>
+                        </p>
                     </div>
                 </div>
 
-
+                <!-- Image Preview -->
+                <div class="d-flex justify-content-center mt-3">
+                    <div id="image-preview" class="col-md-6">
+                    </div>
+                </div>
+                <!--  -->
                 <div class="d-flex justify-content-center mt-3">
                     <button type="submit" class="btn btn-primary col-6">Add product</button>
                 </div>
@@ -107,6 +115,46 @@
             </div>
         </form>
     </div>
-       
+
+    <script>
+      function previewImages() {
+            var previewContainer = document.getElementById('image-preview');
+            var filesInput = document.getElementById('formFileMultiple');
+            var files = filesInput.files;
+
+            previewContainer.innerHTML = ''; // Clear previous previews
+
+            for (var i = 0; i < files.length; i++) {
+                var reader = new FileReader();
+
+                reader.onload = function (event) {
+                    var imageContainer = document.createElement('div');
+                    imageContainer.className = 'image-container';
+
+                    var previewImage = document.createElement('img');
+                    previewImage.src = event.target.result;
+                    previewImage.className = 'preview-image';
+
+                    var closeIcon = document.createElement('span');
+                    closeIcon.innerHTML = '&times;';
+                    closeIcon.className = 'close-icon';
+                    closeIcon.onclick = function () {
+                        imageContainer.remove();
+                    };
+
+                    imageContainer.appendChild(previewImage);
+                    imageContainer.appendChild(closeIcon);
+
+                    previewContainer.appendChild(imageContainer);
+                }
+
+                reader.readAsDataURL(files[i]);
+            }
+        }
+
+        document.getElementById('formFileMultiple').addEventListener('change', previewImages);
+    </script>
 </body>
+
 </html>
+

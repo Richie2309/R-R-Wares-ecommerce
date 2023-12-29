@@ -48,11 +48,11 @@
                     <div class="d-flex flex-row align-items-center mb-4">
                       <div class="form-outline flex-fill mb-0">
                         <label class="form-label" for="email">Your Email</label>
-                        <input type="email" name="email" id="email" class="form-control" />
-                        <p class="name">
+                        <input type="email" name="email" id="email" class="form-control" onkeyup="document.querySelector('.error').style.display='none'"/>
+                        <p class="error name text-danger">
                           <%=signinfo?.name %>
                         </p>
-                        <p>
+                        <p class="error text-danger">
                           <%=signinfo?.noUser %>
                         </p>
                       </div>
@@ -61,11 +61,11 @@
                     <div class="d-flex flex-row align-items-center mb-4">
                       <div class="form-outline flex-fill mb-0">
                         <label class="form-label" for="password">Password</label>
-                        <input type="password" name="password" id="password" class="form-control" />
-                        <p>
+                        <input type="password" name="password" id="password" class="form-control" onkeyup="document.querySelector('.error').style.display='none'"/>
+                        <p class="error text-danger">
                           <%=signinfo?.pass %>
                         </p>
-                        <p>
+                        <p class="error text-danger">
                           <%=signinfo?.wrongPass %>
                         </p>
                       </div>

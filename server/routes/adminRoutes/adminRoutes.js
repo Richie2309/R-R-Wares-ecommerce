@@ -2,9 +2,9 @@ const express = require('express')
 const route = express.Router();
 const multer=require('../../controller/adminController/multer')
 
+const adminAuthMiddleware = require('../../../middlewares/adminMiddleware/adminAuthMiddleware');
 const adminRender = require('../../services/adminServices/adminRender');
 const adminController = require('../../controller/adminController/adminController');
-const adminAuthMiddleware = require('../../../middlewares/adminMiddleware/adminAuthMiddleware');
 
 route.get('/adminSignin', adminAuthMiddleware.noAdminAuth, adminRender.adminSignin)
 
@@ -17,15 +17,21 @@ route.get('/adminProductManage', adminAuthMiddleware.isAdminAuth, adminRender.ad
 route.get('/adminAddProduct', adminAuthMiddleware.isAdminAuth, adminRender.adminAddProduct);
 route.post('/adminAddProduct',  multer.store.array('images',4), adminController.adminAddProducts);
 
-route.get('/adminUnlistedProduct', adminAuthMiddleware.isAdminAuth, adminRender.adminUnlistedProduct);
+route.get('/adminUnlistedProduct', adminAuthMiddleware.isAdminAuth, adminRender.adminUnlistedProduct );
+route.get('/adminUnlistedProduct/:id', adminAuthMiddleware.isAdminAuth, adminController.adminUnlistedProduct);
+ 
+route.get('/adminRestoreProduct/:id', adminAuthMiddleware.isAdminAuth, adminController.adminRestoreProduct);
+
+route.get('/adminUpdateProduct/:id', adminAuthMiddleware.isAdminAuth, adminRender.adminUpdateProduct)
+route.post('/adminUpdateProduct/:id',  multer.store.array('images',4), adminAuthMiddleware.isAdminAuth, adminController.adminUpdateProduct)
 
 route.get('/adminCategoryManage', adminAuthMiddleware.isAdminAuth, adminRender.adminCategoryManage);
 
-route.get('/adminAddCategory', adminAuthMiddleware.isAdminAuth, adminRender.adminAddCategory);
-route.post('/adminAddCategory', adminController.adminAddCategory )
+route.get('/adminUnlistedCategory', adminAuthMiddleware.isAdminAuth, adminRender.adminUnlistedCategory)
+route.get('/AdminUnlistCategory/:id', adminAuthMiddleware.isAdminAuth, adminController.adminUnlistedCategory)
 
-route.get('/adminUnlistedCategory', adminAuthMiddleware.isAdminAuth, adminRender.adminUnlistedCategory);
-route.get('/adminUnlistedCategory/:id', adminAuthMiddleware.isAdminAuth, adminController.adminUnlistedCategory);
+route.get('/adminAddCategory', adminAuthMiddleware.isAdminAuth, adminRender.adminAddCategory);
+route.post('/adminAddCategory', adminController.adminAddCategory)
 
 route.get('/adminRestoreCategory/:id', adminAuthMiddleware.isAdminAuth, adminController.adminRestoreCategory);
 
@@ -39,8 +45,11 @@ route.get('/adminLogout', adminController.adminLogout)
 //api 
 route.post('/api/getAllUser', adminController.getAllUser);
 
-route.get('/api/getProduct',adminController.showProduct)
+route.get('/api/getProduct/:value',adminController.showProduct)
+
+route.get('/api/singleProduct/:value', adminController.singleProduct);
 
 route.post('/api/getCategory/:value', adminController.getCategory);
+
 
 module.exports=route;

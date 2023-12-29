@@ -5,6 +5,9 @@ const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 const Mailgen = require("mailgen");
 const { default: mongoose } = require("mongoose");
+const Categorydb = require('../../model/adminModel/categoryModel')
+const Productdb = require('../../model/adminModel/productModel');
+const { query } = require('express');
 // const dotenv = config({ path: 'congif.env' })
 
 
@@ -269,6 +272,7 @@ exports.userSigninEmail = async (req, res) => {
           { $set: { userLstatus: true } }
         );
       } else {
+        req.session.wrongPass=`Invalid Password`
         req.session.userInfo = req.body.email;
         req.session.invalidUser = `Invalid credentials!`;
         res.status(401).redirect("/userSigninEmail"); //Wrong Password or email
@@ -283,28 +287,102 @@ exports.userSigninEmail = async (req, res) => {
   }
 }
 
+exports.userForgotPass = async (req, res) => {
+  try {
+    if (!req.body.email) {
+      req.session.isUser = `This Field is required`
+    }
+
+    if (req.body.email && !/^[A-Za-z0-9]+@gmail\.com$/.test(req.body.email)) {
+      req.session.isUser = `Not a valid Gmail address`
+    }
+
+    if (req.session.isUser) {
+      return res.status(401).redirect('/userForgotPass');
+    }
+
+    const data = await Userdb.findOne({ email: req.body.email });
+
+    if (!data) {
+      req.session.isUser = "Email not found"
+      res.status(401).redirect('/userForgotPass')
+    }
+
+    req.session.verifyEmail = req.body.email;
+
+    await sendOtpMail(req, res, '/userEnterOtp')
+
+  } catch (err) {
+    res.status(401).redirect('/userForgotPass')
+  }
+}
+
+exports.userEnterOtp = async (req, res) => {
+  try {
+    if (!req.body.otp) {
+      req.session.err = `This Field is required`;
+    }
+    if (req.session.err) {
+      req.session.rTime = req.body.rTime;
+      return res.status(200).redirect("/userEnterOtp");
+    }
+    const response = await userOtpVerify(req, res, "/userEnterOtp");
+    if (response) {
+      deleteOtpFromdb(req.session.otpId);
+      req.session.verifyFogotPassPage = true;
+      res.status(200).redirect("/userResetPassword");
+    }
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+exports.userForgotPassOtpResend = async (req, res) => {
+  try {
+    deleteOtpFromdb(req.session.otpId);
+    sendOtpMail(req, res, "/userEnterOtp");
+
+    delete req.session.err;
+    delete req.session.rTime;
+  } catch (err) {
+    console.log("Resend Mail err:", err);
+  }
+}
+
+exports.userResetPassword = async (req, res) => {
+  try {
+    let { newPass, reenterNewPass } = req.body
+
+    if (!newPass) {
+      req.session.pass = `This Field is required`;
+      return res.redirect('/userResetPassword')
+    }
+    if (!reenterNewPass) {
+      req.session.conPass = `This Field is required`;
+      return res.redirect('/userResetPassword')
+
+    }
+    if (newPass != reenterNewPass) {
+      req.session.bothPass = `Both Passwords doesn't match`;
+      return res.status(401).redirect('/userResetPassword');
+    }
+    if (newPass === reenterNewPass) {
+      const hashedPass = bcrypt.hashSync(newPass, 10);
+
+      await Userdb.updateOne(
+        { email: req.session.verifyEmail },
+        { $set: { password: hashedPass } }
+      )
+      res.status(200).redirect('/userSigninEmail')
+    }
 
 
+  } catch (err) {
+    console.log(err);
+    res.status(500).send('Internal Server Error');
+  }
 
-
-
-//     if (!user) {
-//       req.session.noUser = 'No user found'
-//       return res.redirect('/userSigninEmail')
-//     }
-//     const isPasswordValid = await bcrypt.compare(password, user.password)
-
-//     if (!isPasswordValid) {
-
-//       req.session.wrongPass = 'Invalid password'
-//       return res.redirect('/userSigninEmail')
-//     }
-
-//     res.redirect('/')
-//   } catch (error) {
-//     res.status(401).redirect("/userSigninEmail");
-//   }
-// }
+}
 
 exports.userLogout = async (req, res) => {
   await Userdb.updateOne(
@@ -315,4 +393,28 @@ exports.userLogout = async (req, res) => {
   req.session.destroy();
 
   res.status(200).redirect("/");
+}
+
+exports.productByCategory = async (req, res) => {
+  const category = req.query.name
+  console.log(category);
+  try {
+
+    const result = await Productdb.find({ category: category, listed: true });
+    res.send(result);
+    console.log(result);
+  } catch (err) {
+    console.log("Error:", err);
+    res.status(500).render("errorPages");
+  }
+}
+
+exports.userProductDetail = async (req, res) => {
+  const productId = req.query.productId
+  try {
+    const result = await Productdb.find({ _id: productId })
+    res.send(result)
+  } catch (err) {
+    console.log(err);
+  }
 }

@@ -40,66 +40,25 @@
         <div class="container w-50">
             <h1>Add Category</h1><br>
             <div class="row h-100 d-flex align-items-center bg-light">
-                <form action="/adminAddCategory" method="post" class="text-center p-4 border bg-white border-0" style="font-family: 'Bai Jamjuree', 'sans-serif';">
+                <form action="/adminAddCategory" method="post" class="text-center p-4 border bg-white border-0"
+                    style="font-family: 'Bai Jamjuree', 'sans-serif';">
                     <label for="name" class="d-block fs-5 head text-start bg-light">Category Name</label>
-                    <input class="form-control" type="text" name="name"  />
+                    <input class="form-control" type="text" name="name" />
                     <% if (err) { %>
-                        <p class="err p-0 d-block text-danger"><%= err %></p>
-                      <% } %>
+                        <p class="err p-0 d-block text-danger">
+                            <%= err %>
+                        </p>
+                        <% } %>
 
-                    <div class="mt-3 bg-light">
-                        <button type="submit" class="btn btn-dark">Add Category</button>
-                    </div>
-                </form>
+                            <br><button type="submit" class="btn btn-dark">Add Category</button>
             </div>
+            </form>
         </div>
-        
-        
+    </div>
+
+
     </div>
     </div>
-    <!-- <section id="content">
-        <main>
-            <div class="table-data justify-content-center">
-                <div class="order">
-                    <%# for( let i=0; i < category.length; i++ ) { %>
-                       
-                    <div class="produts">
-                            <div class="productImg d-flex align-items-center justify-content-between">
-                                <div class="proImg d-flex gap-5 align-items-center">
-                                    <div class="d-flex align-items-center justify-content-center">
-                                        <span>
-                                            <%#= i + 1 %>
-                                        </span>
-                                    </div>
-                                    <div class="description d-flex align-items-center">
-                                        <div>
-                                            <p class="cName m-0 p-0 fs-6">
-                                                <%#= category[i].name %>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="actions d-flex align-items-center">
-                                    <a onclick="showPopUp('<%#= category[i]._id %>', '<%#= category[i].name %>')"
-                                        title="Delete Category">
-                                        <svg width="15" height="19" viewBox="0 0 15 19" fill="none"
-                                            xmlns="http://www.w3.org/2000/svg">
-                                            <path
-                                                d="M1.07143 16.8889C1.07143 18.05 2.03571 19 3.21429 19H11.7857C12.9643 19 13.9286 18.05 13.9286 16.8889V4.22222H1.07143V16.8889ZM15 1.05556H11.25L10.1786 0H4.82143L3.75 1.05556H0V3.16667H15V1.05556Z"
-                                                fill="black" />
-                                        </svg>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        <%# } %>
-                            <%# if (category.length===0) { %>
-                                <div class="text-center">\(^Д^)/ <br>No Category.</div>
-                                <%# } %>
-                </div>
-            </div>
-        </main>
-    </section> -->
 </body>
 
 </html>

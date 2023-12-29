@@ -42,7 +42,9 @@ body {
     font-weight: 400;
     line-height: normal;
 } 
-
+.categories{
+    font-family: 'Bai Jamjuree';
+}
 /* her and him on nav */
 #him {
     padding-right: 50px;

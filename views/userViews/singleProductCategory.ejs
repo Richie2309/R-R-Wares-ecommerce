@@ -13,7 +13,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
     crossorigin="anonymous"></script>
-  <link rel="stylesheet" href="/css/users/forhim.css">
+  <link rel="stylesheet" href="/css/users/singleProductCategory.css">
 </head>
 
 <body>
@@ -27,12 +27,12 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav ms-auto">
-          <li class="nav-item" id="him">
+          <!-- <li class="nav-item" id="him">
             <a class="nav-link him" href="#!">FOR HIM</a>
           </li>
           <li class="nav-item" id="her">
             <a class="nav-link her" href="/forHer">FOR HER</a>
-          </li>
+          </li> -->
 
           <li>
             <div class="form">
@@ -45,17 +45,17 @@
             <li class="nav-item p-1">
               <% if (isLoggedIn) { %>
 
-              <div class="round bg-black p-">
-                <a class="nav-link" href="#!">
-                  <i class="fa-regular fa-heart text-light"></i>
-                </a>
-              </div>
-              <% } %>
+                <div class="round bg-black p-">
+                  <a class="nav-link" href="#!">
+                    <i class="fa-regular fa-heart text-light"></i>
+                  </a>
+                </div>
+                <% } %>
 
             </li>
             <li class="nav-item p-1">
               <div class="round bg-black">
-                <a class="nav-link" href="#!">
+                <a class="nav-link" href="userSigninEmail">
                   <i class="fa-solid fa-user text-light"></i>
                 </a>
               </div>
@@ -63,13 +63,23 @@
             </li>
             <li class="nav-item p-1">
               <% if (isLoggedIn) { %>
-              <div class="round bg-black">
-                <a class="nav-link" href="#!">
-                  <i class="fa-solid fa-cart-shopping text-light"></i>
-                </a>
-              </div>
-              <% } %>
+                <div class="round bg-black">
+                  <a class="nav-link" href="#!">
+                    <i class="fa-solid fa-cart-shopping text-light"></i>
+                  </a>
+                </div>
+                <% } %>
 
+            </li>
+            <li class="nav-item p-1">
+              <% if (isLoggedIn) { %>
+                <div class="round bg-black">
+                  <a class="nav-link" href="/userLogout">
+                    <button class="border-0 bg-black"><i
+                        class="fa-solid fa-right-from-bracket text-light bg-black"></i></button>
+                  </a>
+                </div>
+                <% } %>
             </li>
           </div>
         </ul>
@@ -77,7 +87,9 @@
     </div>
   </nav>
   <!-- Navbar -->
-  <div class="forhim">FOR HIM</div>
+  <div class="forhim">
+    <%=selectedCategory.toUpperCase() %>
+  </div>
   <div id="intro">
     <img class="img img-fluid" src="/img/fhim.jpg" alt="for him">
   </div>
@@ -170,102 +182,33 @@
           </div>
         </div>
       </div>
+
+      <!-- Products -->
       <div class="col-md-9">
         <div class="row g-2">
-          <div class="col-md-4 container-fluid">
-            <div class="product py-4">
-              <div class="text-xl-end"><i class="fa-regular fa-heart"></i></div>
-              <div class="text-center"> <img class="img-fluid" src="/img/fhim.jpg" width="200"> </div>
-              <div class="about text-center">
-                <h5>Saint Honore</h5> <span>$1,999.99</span>
+          <% for(let i=0; i < product.length; i++){ %>
+            <div class="col-md-4 mb-1">
+              <div class="product py-4">
+                <div class="text-xl-end"><i class="fa-regular fa-heart"></i></div>
+                <div class="text-center">
+                  <a href="/userProductDetail?productId=<%= product[i]._id %>">
+                    <img class="img-fluid" src="<%= product[i].images[0] %>" width="200"
+                      alt="<%= product[i].productName %>"></a>
+                </div>
+                <div class="about text-center">
+                  <h5>
+                    <%= product[i].brand %>
+                  </h5>
+                  <span>$<%= product[i].price.toFixed(2) %></span>
+                </div>
               </div>
-
             </div>
-          </div>
-          <div class="col-md-4 container-fluid">
-            <div class="product py-4">
-              <div class="text-xl-end"><i class="fa-regular fa-heart"></i></div>
-              <div class="text-center"> <img class="img-fluid" src="/img/fhim.jpg" width="200"> </div>
-              <div class="about text-center">
-                <h5>Zeroo </h5> <span>$123.43</span>
-              </div>
-
-            </div>
-          </div>
-          <div class="col-md-4 container-fluid">
-            <div class="product py-4 ">
-              <div class="text-xl-end"><i class="fa-regular fa-heart"></i></div>
-              <div class="text-center"> <img class="img-fluid" src="/img/fhim.jpg" width="200"> </div>
-              <div class="about text-center">
-                <h5>Koing74</h5> <span>$1,999.99</span>
-              </div>
-
-            </div>
-          </div>
-          <div class="col-md-4 container-fluid">
-            <div class="product py-4">
-              <div class="text-xl-end"><i class="fa-regular fa-heart"></i></div>
-              <div class="text-center"> <img class="img-fluid" src="/img/fhim.jpg" width="200"> </div>
-              <div class="about text-center">
-                <h5>Saint Honore</h5> <span>$1,245.89</span>
-              </div>
-
-            </div>
-          </div>
-          <div class="col-md-4 container-fluid">
-            <div class="product py-4">
-              <div class="text-xl-end"><i class="fa-regular fa-heart"></i></div>
-              <div class="text-center"> <img class="img-fluid" src="/img/fhim.jpg" width="200"> </div>
-              <div class="about text-center">
-                <h5>Saint Honore</h5> <span>$2,999.99</span>
-              </div>
-
-            </div>
-          </div>
-          <div class="col-md-4 container-fluid">
-            <div class="product py-4">
-              <div class="text-xl-end"><i class="fa-regular fa-heart"></i></div>
-              <div class="text-center"> <img class="img-fluid" src="/img/fhim.jpg" width="200"> </div>
-              <div class="about text-center">
-                <h5>Swiss</h5> <span>$999.99</span>
-              </div>
-
-            </div>
-          </div>
-          <div class="col-md-4 container-fluid">
-            <div class="product py-4">
-              <div class="text-xl-end"><i class="fa-regular fa-heart"></i></div>
-              <div class="text-center"> <img class="img-fluid" src="/img/fhim.jpg" width="200"> </div>
-              <div class="about text-center">
-                <h5>Saint Honore</h5> <span>$3,999.99</span>
-              </div>
-
-            </div>
-          </div>
-          <div class="col-md-4 container-fluid">
-            <div class="product py-4">
-              <div class="text-xl-end"><i class="fa-regular fa-heart"></i></div>
-              <div class="text-center"> <img class="img-fluid" src="/img/fhim.jpg" width="200"> </div>
-              <div class="about text-center">
-                <h5>Saint Honore</h5> <span>$99.99</span>
-              </div>
-
-            </div>
-          </div>
-          <div class="col-md-4 container-fluid">
-            <div class="product py-4">
-              <div class="text-xl-end"><i class="fa-regular fa-heart"></i></div>
-              <div class="text-center"> <img class="img-fluid" src="/img/fhim.jpg" width="200"> </div>
-              <div class="about text-center">
-                <h5>Saint Honore</h5> <span>$1,999.99</span>
-              </div>
-
-            </div>
-          </div>
+            <% } %>
         </div>
       </div>
     </div>
   </div>
+  <hr>
   <!-- Footer -->
   <footer class="text-center text-lg-start text-dark" style="background-color: #ffffff;">
     <!-- Grid container -->

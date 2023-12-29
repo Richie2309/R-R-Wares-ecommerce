@@ -28,17 +28,18 @@
     
                       <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Sign In</p>
     
-                      <form class="mx-1 mx-md-4">
+                      <form class="mx-1 mx-md-4" action="/userForgotPass" method="post">
 
                         <div class="d-flex flex-row align-items-center mb-4">
                           <div class="form-outline flex-fill mb-0">
                             <label class="form-label" for="email">Your Email</label>
                             <input type="email" name="email" id="email" class="form-control" />
+                            <p class="error m-0 text-danger"><%=isUser%></p>
                           </div>
                         </div>
     
                         <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
-                          <button type="button" class="btn btn-dark btn-lg">Get OTP</button>
+                          <button type="submit" class="btn btn-dark btn-lg">Get OTP</button>
                         </div>
                         <div class="login-register mt-4 justify-content-center d-flex">
                           <span style="text-align: center;">Or continue with <br><a href="/userSigninEmail">Email and Password</a></span>
@@ -61,46 +62,3 @@
       </section>
     </body>
     </html>
-<!-- <div class="content">
-        <div class="image">
-            <img src="/img/signin.jpg" class="img-fluid">
-        </div>
-
-
-        <div class="mask d-flex align-items-center h-100 gradient-custom-3">
-            <div class="container h-100">
-                <div class="row d-flex justify-content-center align-items-center h-100">
-                    <div class="col-12">
-                        <div style="text-align: center;">
-                            <h2 class="text-uppercase text-center mb-5">Sign In</h2>
-                            <form>
-                              
-                                <div class="form-outline mb-4 titles">
-                                    <label class="form-label" for="form3Example3cg">Email*</label>
-                                    <input type="email" id="getOtpButton" class="form-control form-control-lg boxes" />
-                                </div>
-
-                                <div class="d-flex justify-content-center" style="padding-bottom: 10vh;">
-                                    <button type="button"
-                                        class="btn btn-light btn-block btn-lg gradient-custom-4 text-body">Get OTP</button>
-                                </div>
-
-                            </form>
-                            <div>Or continue with</div><br>
-                            <div id="emailorpass"><a href="#">Email and Password <i class="fa-solid fa-arrow-right"></i></a></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <script>
-        // Add an event listener to the button
-        document.getElementById('getOtpButton').addEventListener('click', function() {
-            // Redirect to the second page when the button is clicked
-            window.location.href = '/userResetPassword'; // Change '/path-to-second-page' to your actual path
-        });
-    </script>
-</body>
-
-</html> -->

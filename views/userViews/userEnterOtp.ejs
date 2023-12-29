@@ -26,19 +26,31 @@
                             <div class="row justify-content-center">
                                 <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
 
-                                    <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Sign In</p>
+                                    <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Forgot Password</p>
 
-                                    <form class="mx-1 mx-md-4">
+                                    <form class="mx-1 mx-md-4" action="/userEnterOtp" method="post">
 
                                         <div class="d-flex flex-row align-items-center mb-4">
                                             <div class="form-outline flex-fill mb-0"><label class="form-label"
                                                     for="name">OTP send succeccfully.<br>Please enter it below.</label>
-                                                <input type="text" id="name" name="fullname" class="form-control" />
+                                                <input type="text" id="name" name="otp" class="form-control" />
+                                                <p class="error m-0 text-danger">
+                                                    <%=errorMesg%>
+                                                  </p>
                                             </div>
                                         </div>
+                                        <!--Resend  -->
+                                        <br>
+                                        <label class="timeStamp d-block"><span class="seconds">
+                                                <%= rTime?rTime:'60' %>
+                                            </span> seconds remaining</label><br>
+                                        <a class="text-decoration-none" href="/userForgotPassOtpResend"><button
+                                                class="resendbtn" type="button" hidden>Resend OTP</button></a>
+                                        <input type="text" value="" hidden class="remainingTime" name="rTime">
+                                        <!--  -->
 
                                         <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
-                                            <button type="button" id="submitOtpButton"
+                                            <button type="submit" id="submitOtpButton"
                                                 class="btn btn-dark btn-lg">Submit OTP</button>
                                         </div>
 
@@ -57,50 +69,24 @@
             </div>
         </div>
     </section>
-
+    <script>
+        const time = document.querySelector(".seconds");
+        const resendButton = document.querySelector(".resendbtn");
+    
+        const cancelIntervel = setInterval(() => {
+          if (Number(time.innerHTML) > 0) {
+            document.querySelector(".remainingTime").value = `${Number(time.innerHTML) - 1
+              }`;
+            time.innerHTML = `${Number(time.innerHTML) - 1}`;
+          } else {
+            clearInterval(cancelIntervel);
+            showButton();
+          }
+        }, 1000);
+        function showButton() {
+        resendButton.removeAttribute("hidden");
+      }
+      </script>
 </body>
 
 </html>
-
-<!-- <div class="content">
-        <div class="image">
-            <img src="/img/signin.jpg" class="img-fluid">
-        </div>
-
-
-        <div class="mask d-flex align-items-center h-100 gradient-custom-3">
-            <div class="container h-100">
-                <div class="row d-flex justify-content-center align-items-center h-100">
-                    <div class="col-12">
-                        <div style="text-align: center;">
-                            <h2 class="text-uppercase text-center mb-5">Sign In</h2>
-                            <form>
-                              
-                                <div class="form-outline mb-4 titles">
-                                    <label class="form-label" for="form3Example3cg">OTP send succeccfully.<br>Please enter it below.</label>
-                                    <input type="email" id="otpInput" class="form-control form-control-lg boxes" />
-                                </div>
-
-                                <div class="d-flex justify-content-center" style="padding-bottom: 10vh;">
-                                    <button type="button" id="submitOtpButton"
-                                        class="btn btn-light btn-block btn-lg gradient-custom-4 text-body">Submit OTP</button>
-                                </div>
-
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <script>
-        document.getElementById('submitOtpButton').addEventListener('click', function() {
-            // Handle OTP submission logic here
-            // You might want to send the OTP to the server for verification
-            // After successful verification, you can redirect to another page
-            window.location.href = '/path-to-final-page'; // Change '/path-to-final-page' to your actual path
-        });
-    </script>
-</body>
-
-</html> -->

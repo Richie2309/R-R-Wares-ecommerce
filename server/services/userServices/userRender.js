@@ -1,22 +1,44 @@
 const axios = require('axios');
+const Productdb = require('../../model/adminModel/productModel');
 
-exports.homepage = (req, res) => {
-    res.render('userViews/homepage', { isLoggedIn: req.session.isUserAuth });
+exports.homepage = async (req, res) => {
+    const category = await axios.post(`http://localhost:${process.env.PORT}/api/getCategory/1`);
+    console.log(category);
+
+    res.render('userViews/homepage', { isLoggedIn: req.session.isUserAuth, category: category.data });
 }
 
-exports.forHim = (req, res) => {
-    console.log(req.session.isLoggedIn);
-    res.render('userViews/forHim', { isLoggedIn: req.session.isUserAuth });
+exports.singleProductCategory = async (req, res) => {
+    try {
+        const name = req.query.name
+        const product = await axios.get(`http://localhost:${process.env.PORT}/api/productByCategory?name=${name}`)
+        const category = await axios.post(`http://localhost:${process.env.PORT}/api/getCategory/1`);
+        console.log(product);
+        res.render('userViews/singleProductCategory', { isLoggedIn: req.session.isUserAuth, product: product.data, category: category.data, selectedCategory: name });
+        console.log(product.data);
+    }
+    catch (err) {
+        console.log(err);
+    }
 }
 
+exports.userProductDetail = async (req, res) => {
+    try {
+        const productId = req.query.productId
+        const product = await axios.get(`http://localhost:${process.env.PORT}/api/getProductDetail?productId=${productId}`)
+        res.render('userViews/userProductDetail', { isLoggedIn: req.session.isUserAuth, product: product.data[0] })
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+
+//Women's Page
 exports.forHer = (req, res) => {
     res.render('userViews/forHer', { isLoggedIn: req.session.isUserAuth });
 }
 
 
-// exports.userSignup = (req, res) => {
-//     res.redirect('/userSignupOtpVerify');
-//};
 exports.userSignupEmailVerify = async (req, res) => {
     res.render('userViews/userSignupEmail', { isUser: req.session.isUser }, (err, html) => {
         if (err) {
@@ -28,8 +50,8 @@ exports.userSignupEmailVerify = async (req, res) => {
 }
 
 exports.userSignupOtpVerify = async (req, res) => {
- 
-    res.render('userViews/userSignupOtpVerify', { email: req.session.verifyEmail, errorMesg: req.session.err ,  rTime: req.session.rTime}, (err, html) => {
+
+    res.render('userViews/userSignupOtpVerify', { email: req.session.verifyEmail, errorMesg: req.session.err, rTime: req.session.rTime }, (err, html) => {
         if (err) {
             console.log(err);
             return res.status(500).send('Internal Error');
@@ -70,61 +92,42 @@ exports.userSigninEmail = (req, res) => {
     })
 }
 
-
-exports.userForgotPass = (req, res) => {
-    res.render('userViews/userForgotPass')
+exports.userForgotPass = async (req, res) => {
+    res.render('userViews/userForgotPass', { isUser: req.session.isUser }, (err, html) => {
+        if (err) {
+            console.log(err);
+        }
+        delete req.session.isUser;
+        res.send(html)
+    })
 }
 
 
 
 exports.userEnterOtp = (req, res) => {
-    res.render('userViews/userEnterOtp')
+    res.render('userViews/userEnterOtp', { email: req.session.verifyEmail, errorMesg: req.session.err, rTime: req.session.rTime }, (err, html) => {
+        if (err) {
+            console.log(err);
+            return res.status(500).send('Internal Error');
+        }
+        delete req.session.err;
+        delete req.session.rTime;
+        res.send(html)
+    })
 }
 
 exports.userResetPassword = (req, res) => {
-    res.render('userViews/userResetPassword')
+    res.render('userViews/userResetPassword', { pass: req.session.pass, conPass: req.session.conPass, bothPass: req.session.bothPass }, (err, html) => {
+        if (err) {
+            console.log(err);
+            return res.status(500).send('Internal Error');
+        }
+        delete req.session.pass;
+        delete req.session.conPass;
+        delete req.session.bothPass;
+        res.send(html)
+    })
 }
 
-
-
-// exports.userSignup = (req, res) => {
-//     console.log('Checking verifyEmail session variable:', req.session.verifyEmail);
-
-//     // Check if there is an ongoing signup process
-//     if (req.session.verifyEmail) {
-//         // Redirect to the OTP verification page if email is being verified
-//         return res.redirect('/userSignupOtpVerify');
-//     }
-
-//     res.status(200).render('userViews/userSignup', {
-//         userInfo: req.session.userSignup,
-//         errMesg: {
-//             fName: req.session.fName,
-//             email: req.session.email,
-//             pass: req.session.pass,
-//             conPass: req.session.conPass,
-//             bothPass: req.session.bothPass
-//         }
-//         userInfo: req.session.userSignup, errMesg: {
-//             fName: req.session.fName,
-//             email: req.session.email,
-//             pass: req.session.pass,
-//             conPass: req.session.conPass,
-//             bothPass: req.session.bothPass
-//         }
-//     }, (err, html) => {
-//         if (err) {
-//             console.log('Signup Page render Err:', err);
-//             return res.status(500).send('Internal Error');
-//         }
-//         delete req.session.userSignup;
-//         delete req.session.fName;
-//         delete req.session.pass;
-//         delete req.session.conPass;
-//         delete req.session.bothPass;
-
-//         res.status(200).send(html);
-//      } )
-// }
 
 

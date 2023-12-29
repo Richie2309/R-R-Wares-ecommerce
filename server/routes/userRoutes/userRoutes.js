@@ -7,9 +7,9 @@ const userAuthMiddleware = require('../../../middlewares/userMiddleware/userAuth
 
 route.get('/', userAuthMiddleware.isUserBlocked, userRender.homepage)
 
-route.get('/forHim', userRender.forHim)
+route.get('/singleProductCategory', userAuthMiddleware.isUserBlocked, userRender.singleProductCategory)
 
-route.get('/forHer', userRender.forHer)
+route.get('/userProductDetail', userAuthMiddleware.isUserBlocked, userRender.userProductDetail)
 
 route.get('/userSigninEmail', userAuthMiddleware.isUserAuth, userRender.userSigninEmail)
 route.post('/userSigninEmail', userController.userSigninEmail)
@@ -22,26 +22,30 @@ route.post('/userSignupOtpVerify', userController.userSignupOtpVerify)
 
 route.get('/userSignupEmailVerifyResend', userController.userSignupEmailVerifyResend);
 
-
 route.get('/userSignup', userRender.userSignup)
 route.post('/userSignup', userController.userSignup);
 
-route.get('/userEnterOtp', userRender.userEnterOtp)
-
 route.get('/userForgotPass', userRender.userForgotPass)
+route.post('/userForgotPass',userController.userForgotPass)
+
+route.get('/userEnterOtp', userRender.userEnterOtp)
+route.post('/userEnterOtp', userController.userEnterOtp)
+
+route.get('/userForgotPassOtpResend', userController.userForgotPassOtpResend);
 
 route.get('/userResetPassword', userRender.userResetPassword)
+route.post('/userResetPassword', userController.userResetPassword)
 
 route.get('/userLogout', userController.userLogout)
 
 
-
-// route.post('/userSignup', userController.userSignup)
-
-
-// route.post('/userSignupEmail', userController.userSignupEmail)
-
-// route.post('/userSignupOtpVerify', userController.userSignupOtpVerify)
+//
+// route.get('/productByCategory',  userRender.productByCategory);
+// //
 
 
+// //api
+route.get('/api/productByCategory', userController.productByCategory);
+
+route.get('/api/getProductDetail',userController.userProductDetail)
 module.exports = route;

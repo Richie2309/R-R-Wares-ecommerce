@@ -38,6 +38,7 @@ app.use(session({
 app.use('/css', express.static(path.resolve(__dirname, 'assets/css')))
 app.use('/img', express.static(path.resolve(__dirname, 'assets/img')))
 app.use('/js', express.static(path.resolve(__dirname, 'assets/js')))
+app.use("/uploads" ,express.static(path.resolve(__dirname, "assets/uploads")))
 
 app.use((req, res, next) => {                
     res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); 

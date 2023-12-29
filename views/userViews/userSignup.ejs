@@ -32,8 +32,8 @@
                       <i class="fas fa-user fa-lg me-3 fa-fw"></i>
                       <div class="form-outline flex-fill mb-0">
                         <label class="form-label" for="fullname">Full Name</label>
-                        <input class="form-control " type="text" name="fname" id="fname" />
-                        <p class="name1 text-danger">
+                        <input class="form-control " type="text" name="fname" id="fname"  onkeyup="document.querySelector('.error').style.display='none'"/>
+                        <p class="error text-danger">
                           <%=signinfo?.name %>
                         </p>
                         <!-- <span id="blankMsg" style="color:red"> </span> -->
@@ -55,8 +55,8 @@
                       <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
                       <div class="form-outline flex-fill mb-0">
                         <label class="form-label" for="password">Password</label>
-                        <input class="form-control " type="password" name="password" id="password" />
-                        <p class="pass2 text-danger">
+                        <input class="form-control " type="password" name="password" id="password" onkeyup="document.querySelector('.error').style.display='none'" />
+                        <p class="error pass2 text-danger">
                           <%=signinfo?.pass %>
                         </p>
                         <!-- <span id="message1" style="color:red"> </span> -->
@@ -67,13 +67,11 @@
                       <i class="fas fa-key fa-lg me-3 fa-fw"></i>
                       <div class="form-outline flex-fill mb-0">
                         <label class="form-label" for="reenterpassword">Re-enter password</label>
-                        <input class="form-control " type="password" name="reenterpassword" id="reenterpassword" />
-                        <p class="pass3 text-danger">
-                          <%=signinfo?.conPass %>
+                        <input class="form-control " type="password" name="reenterpassword" id="reenterpassword" onkeyup="document.querySelector('.error').style.display='none'"/>
+                        <p class="error pass3 text-danger">
+                          <%=signinfo?.conPass %><%=signinfo?.bothPass%>
                         </p>
-                        <p class="pass4 text-danger">
-                          <%=signinfo?.bothPass%>
-                        </p>
+                        
                         <!-- <span id = "message2" style="color:red"></span> -->
                       </div>
                     </div>

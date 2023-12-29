@@ -79,7 +79,6 @@
                         </li>
                         <li class="nav-item p-1">
                             <% if (isLoggedIn) { %>
-
                                 <div class="round bg-light">
                                     <a class="nav-link" href="#!">
                                         <i class="fa-solid fa-cart-shopping text-black"></i>
@@ -88,12 +87,13 @@
                                 <% } %>
                         </li>
                         <li class="nav-item p-1">
-                            <div class="round bg-light">
-                                <a class="nav-link" href="/userLogout">
-                                    <button class="border-0"><i class="fa-solid fa-right-from-bracket"></i></button>
-                                </a>
-                            </div>
-
+                            <% if (isLoggedIn) { %>
+                                <div class="round bg-light">
+                                    <a class="nav-link" href="/userLogout">
+                                        <button class="border-0"><i class="fa-solid fa-right-from-bracket"></i></button>
+                                    </a>
+                                </div>
+                                <% } %>
                         </li>
                     </div>
                 </ul>
@@ -101,6 +101,20 @@
         </div>
     </nav>
     <!-- Navbar -->
+    <!-- Content -->
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle text-light fs-4 categories" href="#" role="button" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            Categories
+        </a>
+        <ul class="dropdown-menu">
+            <% for(let i=0;i<category.length;i++){ %>
+                <li><a class="dropdown-item categories" href="/singleProductCategory?name=<%= category[i].name %>">
+                        <%= category[i].name %>
+                    </a></li>
+                <% } %>
+        </ul>
+    </li>
     <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
         <div class="carousel-inner">
             <div class="carousel-item active">
@@ -126,11 +140,11 @@
     </div>
     <div class="row">
         <div class="column">
-            <a href="/forHer"><img src="/img/homeher.png"></a>
+            <a href="#"><img src="/img/homeher.png"></a>
 
         </div>
         <div class="column">
-            <a href="/forHim"><img src="/img/homehim.png"></a>
+            <a href="#"><img src="/img/homehim.png"></a>
         </div>
         <div class="qoute pt-2 container-fluid w-100"><img src="/img/homequote.png" class="w-100" alt=""></div>
 
@@ -234,6 +248,11 @@
             <!-- Grid container -->
         </footer>
         <!-- Footer -->
+        <script>
+            function gotoProductPage() {
+
+            }
+        </script>
 </body>
 
 </html>
