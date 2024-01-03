@@ -69,14 +69,23 @@
                                 </div>
                                 <% } %>
                         </li>
-                        <li class="nav-item p-1">
-                            <div class="round bg-light">
-                                <a class="nav-link" href="userSigninEmail">
-                                    <i class="fa-solid fa-user text-black"></i>
-                                </a>
-                            </div>
 
+                        <li class="nav-item p-1">
+                            <% if (isLoggedIn) { %>
+                                <div class="round bg-light">
+                                    <a class="nav-link" href="userProfile">
+                                        <i class="fa-solid fa-user text-black"></i>
+                                    </a>
+                                </div>
+                                <% } else{%>
+                                    <div class="round bg-light">
+                                        <a class="nav-link" href="userSigninEmail">
+                                            <i class="fa-solid fa-user text-black"></i>
+                                        </a>
+                                    </div>
+                                    <% } %>
                         </li>
+
                         <li class="nav-item p-1">
                             <% if (isLoggedIn) { %>
                                 <div class="round bg-light">
@@ -118,13 +127,13 @@
     <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
         <div class="carousel-inner">
             <div class="carousel-item active">
-                <img src="/img/home1.png" class="d-block w-100" alt="...">
+                <img src="/img/home1.png" class="d-block w-100 mx-auto" alt="...">
             </div>
             <div class="carousel-item">
-                <img src="/img/home1.png" class="d-block w-100" alt="...">
+                <img src="/img/home1.png" class="d-block w-100 mx-auto" alt="...">
             </div>
             <div class="carousel-item">
-                <img src="/img/home1.png" class="d-block w-100" alt="...">
+                <img src="/img/home1.png" class="d-block w-100 mx-auto" alt="...">
             </div>
         </div>
         <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls"
@@ -139,14 +148,31 @@
         </button>
     </div>
     <div class="row">
-        <div class="column">
-            <a href="#"><img src="/img/homeher.png"></a>
-
+        <div class="columns-container">
+            <div class="column">
+                <a href="#">
+                    <img src="/img/homehim.png" class="column-image" alt="HomeHer Image">
+                </a>
+            </div>
+            <div class="column">
+                <a href="#">
+                    <img src="/img/homeher.png" class="column-image" alt="HomeHer Image">
+                </a>
+            </div>
+            <div class="column">
+                <a href="#">
+                    <img src="/img/homehim.png" class="column-image" alt="HomeHim Image">
+                </a>
+            </div>
+            <div class="column">
+                <a href="#">
+                    <img src="/img/homeher.png" class="column-image" alt="HomeHer Image">
+                </a>
+            </div>
         </div>
-        <div class="column">
-            <a href="#"><img src="/img/homehim.png"></a>
+        <div class="qoute pt-2 container-fluid w-100">
+            <img src="/img/homequote.png" class="w-100" alt="">
         </div>
-        <div class="qoute pt-2 container-fluid w-100"><img src="/img/homequote.png" class="w-100" alt=""></div>
 
         <!-- Footer -->
         <footer class="text-center text-lg-start text-dark" style="background-color: #000000;">

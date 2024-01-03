@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+            integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+            crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+            integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+            crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link rel="stylesheet" href="/css/users/userAddress.css">
+    </head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-scroll shadow-0 bg-black mb-4">
+        <div class="container">
+            <a class="navbar-brand text-light" href="#!">R&R <br>Wares</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <i class="fas fa-bars text-light"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item" id="him">
+                        <!-- <a class="nav-link him" href="#!">FOR HIM</a> -->
+                    </li>
+                    <li class="nav-item" id="her">
+                        <!-- <a class="nav-link her" href="#!">FOR HER</a> -->
+                    </li>
+
+                    <li>
+                        <div class="form">
+                            <i class="fa fa-search text-black bg-light"></i>
+                            <input type="text" class="form-control form-input bg-light text-dark" placeholder="Search">
+                        </div>
+                    </li>
+
+                    <div class="left">
+                        <li class="nav-item p-1">
+                                <div class="round bg-light">
+                                    <a class="nav-link" href="#!">
+                                        <i class="fa-regular fa-heart text-black"></i>
+                                    </a>
+                                </div>
+                        </li>
+                        <li class="nav-item p-1">
+                            <div class="round bg-light">
+                                <a class="nav-link" href="userSigninEmail">
+                                    <i class="fa-solid fa-user text-black"></i>
+                                </a>
+                            </div>
+
+                        </li>
+                        <li class="nav-item p-1">
+                                <div class="round bg-light">
+                                    <a class="nav-link" href="#!">
+                                        <i class="fa-solid fa-cart-shopping text-black"></i>
+                                    </a>
+                                </div>
+                        </li>
+                        <li class="nav-item p-1">
+                                <div class="round bg-light">
+                                    <a class="nav-link" href="/userLogout">
+                                        <button class="border-0"><i class="fa-solid fa-right-from-bracket"></i></button>
+                                    </a>
+                                </div>
+                        </li>
+                    </div>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- Navbar -->
+
+        <div class="container mb-4">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="osahan-account-page-left shadow-sm bg-white h-100">
+                   
+                        <ul class="nav nav-tabs flex-column border-0 pt-4 pl-4 pb-4" id="myTab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link" id="addresses-tab" data-toggle="tab" href="/userAddAddress" role="tab" aria-controls="addresses" aria-selected="false"><i class="fa-solid fa-plus text-bg-success"></i> Add Addresses</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <div class="osahan-account-page-right shadow-sm bg-white p-4 h-100">
+                        <div class="tab-content" id="myTabContent">
+                            <div class="tab-pane fade  active show" id="addresses" role="tabpanel" aria-labelledby="addresses-tab">
+                                <h4 class="font-weight-bold mt-0 mb-4">Manage Addresses</h4>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="bg-white card addresses-item mb-4 border border-primary shadow">
+                                            <div class="gold-members p-4">
+                                                <div class="media">
+                                                    <div class="mr-3"><i class="icofont-ui-home icofont-3x"></i></div>
+                                                    <div class="media-body">
+                                                        <h6 class="mb-1 text-secondary">Home</h6>
+                                                        <p class="text-black">Osahan House, Jawaddi Kalan, Ludhiana, Punjab 141002, India
+                                                        </p>
+                                                        <p class="mb-0 text-black font-weight-bold"><a class="text-primary mr-3" data-toggle="modal" data-target="#add-address-modal" href="#"><i class="icofont-ui-edit"></i> EDIT</a> <a class="text-danger" data-toggle="modal" data-target="#delete-address-modal" href="#"><i class="icofont-ui-delete"></i> DELETE</a></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="bg-white card addresses-item mb-4 shadow-sm">
+                                            <div class="gold-members p-4">
+                                                <div class="media">
+                                                    <div class="mr-3"><i class="icofont-briefcase icofont-3x"></i></div>
+                                                    <div class="media-body">
+                                                        <h6 class="mb-1">Work</h6>
+                                                        <p>NCC, Model Town Rd, Pritm Nagar, Model Town, Ludhiana, Punjab 141002, India
+                                                        </p>
+                                                        <p class="mb-0 text-black font-weight-bold"><a class="text-primary mr-3" data-toggle="modal" data-target="#add-address-modal" href="#"><i class="icofont-ui-edit"></i> EDIT</a> <a class="text-danger" data-toggle="modal" data-target="#delete-address-modal" href="#"><i class="icofont-ui-delete"></i> DELETE</a></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row pt-2 pb-2">
+                                    <div class="col-md-6">
+                                        <div class="bg-white card addresses-item mb-4  shadow-sm">
+                                            <div class="gold-members p-4">
+                                                <div class="media">
+                                                    <div class="mr-3"><i class="icofont-location-pin icofont-3x"></i></div>
+                                                    <div class="media-body">
+                                                        <h6 class="mb-1">Other</h6>
+                                                        <p>Delhi Bypass Rd, Jawaddi Taksal, Ludhiana, Punjab 141002, India
+                                                        </p>
+                                                        <p class="mb-0 text-black font-weight-bold"><a class="text-primary mr-3" data-toggle="modal" data-target="#add-address-modal" href="#"><i class="icofont-ui-edit"></i> EDIT</a> <a class="text-danger" data-toggle="modal" data-target="#delete-address-modal" href="#"><i class="icofont-ui-delete"></i> DELETE</a></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                
+                                </div>
+                         
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <!-- Footer -->
+    <footer class="text-center text-lg-start text-dark" style="background-color: #000000;">
+        <!-- Grid container -->
+        <div class="container p-4 pb-0">
+            <!-- Section: Links -->
+            <section class="">
+                <!--Grid row-->
+                <div class="footer row">
+
+
+                    <hr class="w-100 clearfix d-md-none" />
+
+                    <!-- Grid column -->
+                    <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mt-3">
+                        <h6 class="text-uppercase mb-4 font-weight-bold text-light">About</h6>
+                        <p>
+                            <a class="text-light  text-decoration-none" href="">Contact Us</a>
+                        </p>
+                        <p>
+                            <a class="text-light  text-decoration-none" href="">About Us</a>
+                        </p>
+                        <p>
+                            <a class="text-light text-decoration-none" href="">Return & Refunds</a>
+                        </p>
+                        <p>
+                            <a class="text-light text-decoration-none" href="">FAQ'S</a>
+                        </p>
+                    </div>
+                    <!-- Grid column -->
+
+                    <hr class="w-100 clearfix d-md-none" />
+
+                    <!-- Grid column -->
+                    <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mt-3">
+                        <h6 class="text-uppercase mb-4 font-weight-bold text-light">
+                            More info
+                        </h6>
+                        <p>
+                            <a class="text-light text-decoration-none" href="">Terms and Conditions</a>
+                        </p>
+                        <p>
+                            <a class="text-light text-decoration-none" href="">Privacy Policy</a>
+                        </p>
+                        <p>
+                            <a class="text-light text-decoration-none" href="">Shipping Policy</a>
+                        </p>
+                    </div>
+
+                    <!-- Grid column -->
+                    <hr class="w-100 clearfix d-md-none" />
+
+                    <!-- Grid column -->
+                    <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mt-3 text-light">
+                        <h6 class="text-uppercase mb-4 font-weight-bold text-light">Location</h6>
+                        <p>support@r&rwares.com</p>
+                        <p> 222 Avenue Tokyo, 727487, Japan </p>
+                        <p>Telephone: 044-456147000</p>
+                    </div>
+                    <!-- Grid column -->
+                </div>
+                <!--Grid row-->
+            </section>
+            <!-- Section: Links -->
+
+            <hr class="my-3">
+
+            <!-- Section: Copyright -->
+
+            <div class="row">
+                <!-- Grid column -->
+                <div class="col-md-12 text-center text-md-center">
+                    <!-- Copyright -->
+                    <div class="p-3 ">
+                        <p class="text-light">Copyright © 2023 R@R Wares Pvt Ltd. All rights reserved.</p>
+                    </div>
+                    <!-- Copyright -->
+                </div>
+                <!-- Grid column -->
+
+                <!-- Grid column -->
+                <div class="col-md-12 text-center">
+                    <!-- Facebook -->
+                    <a class="btn btn-outline-light btn-floating m-1" class="text-light" role="button"><i
+                            class="fab fa-facebook-f"></i></a>
+
+                    <!-- Twitter -->
+                    <a class="btn btn-outline-light btn-floating m-1" class="text-light" role="button"><i
+                            class="fab fa-twitter"></i></a>
+
+                    <!-- Instagram -->
+                    <a class="btn btn-outline-light btn-floating m-1" class="text-light" role="button"><i
+                            class="fab fa-instagram"></i></a>
+                </div>
+                <!-- Grid column -->
+            </div>
+            <!-- Section: Copyright -->
+        </div>
+        <!-- Grid container -->
+    </footer>
+    <!-- Footer -->
+</body>
+</html>

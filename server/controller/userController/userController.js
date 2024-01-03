@@ -8,8 +8,13 @@ const { default: mongoose } = require("mongoose");
 const Categorydb = require('../../model/adminModel/categoryModel')
 const Productdb = require('../../model/adminModel/productModel');
 const { query } = require('express');
+const userAddressdb=require('../../model/userModel/addressModel')
 // const dotenv = config({ path: 'congif.env' })
 
+function capitalizeFirstLetter(str) {
+  str = str.toLowerCase();
+  return str.charAt(0).toUpperCase() + str.slice(1);
+} 
 
 const deleteOtpFromdb = async (_id) => {
   await Otpdb.deleteOne({ _id });
@@ -248,7 +253,7 @@ exports.userSigninEmail = async (req, res) => {
     const user = await Userdb.findOne({ email: email })
 
     if (!req.body.email) {
-      req.session.fName = `This Field is required`;
+      req.session.email = `This Field is required`;
     }
     if (!req.body.password) {
       req.session.pass = `This Field is required`;
@@ -272,7 +277,7 @@ exports.userSigninEmail = async (req, res) => {
           { $set: { userLstatus: true } }
         );
       } else {
-        req.session.wrongPass=`Invalid Password`
+        req.session.wrongPass = `Invalid Password`
         req.session.userInfo = req.body.email;
         req.session.invalidUser = `Invalid credentials!`;
         res.status(401).redirect("/userSigninEmail"); //Wrong Password or email
@@ -414,6 +419,177 @@ exports.userProductDetail = async (req, res) => {
   try {
     const result = await Productdb.find({ _id: productId })
     res.send(result)
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+exports.userInfo = async (req, res) => {
+  const userId = req.query.userId
+  try {
+    const result = await Userdb.findOne({ _id: userId })
+    res.send(result)
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+exports.userEditProfile = async (req, res) => {
+  try {
+    if (!req.body.fName) {
+      req.session.fName = `This Field is required`;
+    }
+    if (req.body.oldPass || req.body.newPass || req.body.conNewPass) {
+      if (!req.body.oldPass) {
+        req.session.oldPass = `This Field is required`;
+      }
+
+      if (!req.body.newPass) {
+        req.session.newPass = `This Field is required`;
+      }
+
+      if (!req.body.conNewPass) {
+        req.session.conNewPass = `This Field is required`;
+      }
+
+      if (req.body.newPass !== req.body.conNewPass) {
+        req.session.conNewPass = `Both Password doesn't Match`;
+      }
+    }
+    if (req.body.oldPass && req.body.newPass && req.body.conNewPass) {
+      const userInfo = await Userdb.findOne({ _id: req.session.isUserAuth });
+      if (!bcrypt.compareSync(req.body.oldPass, userInfo.password)) {
+        req.session.oldPass = `Incorrect Password`;
+      }
+    }
+
+    if (
+      req.session.fName ||
+      req.session.email ||
+      req.session.oldPass ||
+      req.session.newPass ||
+      req.session.conNewPass
+    ) {
+      req.session.savedInfo = {
+        fName: req.body.fName,
+      };
+      return res.status(401).redirect("/userEditProfile");
+    }
+    if (req.body.oldPass) {
+      const hashedPass = bcrypt.hashSync(req.body.newPass, 10);
+
+      const User = {
+        fullName: req.body.fName,
+        password: hashedPass,
+      };
+      await Userdb.updateOne(
+        { _id: req.session.isUserAuth },
+        { $set: User }
+      );
+    } else {
+      const User = {
+        fullName: req.body.fName,
+      };
+      await Userdb.updateOne(
+        { _id: req.session.isUserAuth },
+        { $set: User }
+      );
+    }
+    res.status(200).redirect("/userProfile");
+  } catch (err) {
+    console.log(err);
+  }
+}
+exports.userAddAddress= async (req, res) => {
+  try {
+    if (!req.body.fName) {
+      req.session.fName = `This Field is required`;
+    }
+
+    if (!req.body.pincode) {
+      req.session.pincode = `This Field is required`;
+    }
+
+    if (!req.body.locality) {
+      req.session.locality = `This Field is required`;
+    }
+
+    if (!req.body.address) {
+      req.session.address = `This Field is required`;
+    }
+
+    if (!req.body.district) {
+      req.session.district = `This Field is required`;
+    }
+
+    if (!req.body.state) {
+      req.session.state = `This Field is required`;
+    }
+
+    if (
+      req.session.fName ||
+      req.session.pincode ||
+      req.session.locality ||
+      req.session.address ||
+      req.session.district ||
+      req.session.state
+    ) {
+      req.session.sAddress = req.body;
+      return res.status(401).redirect("/userAddAddress");
+    }
+
+    req.body.fName = capitalizeFirstLetter(req.body.fName);
+    req.body.locality = capitalizeFirstLetter(req.body.locality);
+    req.body.district = capitalizeFirstLetter(req.body.district);
+    req.body.state = capitalizeFirstLetter(req.body.state);
+
+    const isAddress = await userAddressdb.findOne({
+      userId: req.session.isUserAuth,
+      "address.fName": req.body.fName,
+      "address.pincode": req.body.pincode,
+      "address.locality": req.body.locality,
+      "address.address": req.body.address,
+      "address.district": req.body.district,
+      "address.state": req.body.state,
+    });
+
+    if (isAddress) {
+      req.session.exist = `This address already exist`;
+      return res.status(401).redirect("/userAddAddress");
+    }
+
+    const structuredAddress = `${req.body.fName}, ${address}, ${req.body.locality}, ${req.body.district}, ${req.body.state} - ${req.body.pincode}`;
+
+    await userAddressdb.updateOne(
+      { userId: req.session.isUserAuth },
+      {
+        $push: {
+          address: {
+            fname: req.body.fName,
+            pincode: req.body.pincode,
+            locality: req.body.locality,
+            addres: req.body.address,
+            district: req.body.district,
+            state: req.body.state,
+            structuredAddress,
+          },
+        },
+      },
+      { upsert: true }
+    );
+
+    const addres = await userAddressdb.findOne({
+      userId: req.session.isUserAuth,
+    });
+
+    if (!addres.defaultAddress || addres.address.length === 1) {
+      await userAddressdb.updateOne(
+        { userId: req.session.isUserAuth },
+        { $set: { defaultAddress: addres.address[0]._id } }
+      );
+    }
+
+    res.status(200).redirect("/userEditAddress");
   } catch (err) {
     console.log(err);
   }

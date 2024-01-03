@@ -38,6 +38,16 @@ route.post('/userResetPassword', userController.userResetPassword)
 
 route.get('/userLogout', userController.userLogout)
 
+route.get('/userProfile', userAuthMiddleware.isUserBlocked, userRender.userProfile)
+
+route.get('/userEditProfile', userAuthMiddleware.isUserBlocked, userRender.userEditProfile)
+route.post('/userEditProfile', userAuthMiddleware.isUserBlocked, userController.userEditProfile)
+
+route.get('/userAddress',userRender.userAddress)
+
+
+route.get('/userAddAddress',userRender.userAddAddress)
+route.post('/userAddAddress',userRender.userAddAddress)
 
 //
 // route.get('/productByCategory',  userRender.productByCategory);
@@ -48,4 +58,7 @@ route.get('/userLogout', userController.userLogout)
 route.get('/api/productByCategory', userController.productByCategory);
 
 route.get('/api/getProductDetail',userController.userProductDetail)
+
+route.get('/api/getUserInfo',userController.userInfo)
+
 module.exports = route;

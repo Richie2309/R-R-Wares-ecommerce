@@ -13,7 +13,6 @@ exports.singleProductCategory = async (req, res) => {
         const name = req.query.name
         const product = await axios.get(`http://localhost:${process.env.PORT}/api/productByCategory?name=${name}`)
         const category = await axios.post(`http://localhost:${process.env.PORT}/api/getCategory/1`);
-        console.log(product);
         res.render('userViews/singleProductCategory', { isLoggedIn: req.session.isUserAuth, product: product.data, category: category.data, selectedCategory: name });
         console.log(product.data);
     }
@@ -34,9 +33,9 @@ exports.userProductDetail = async (req, res) => {
 
 
 //Women's Page
-exports.forHer = (req, res) => {
-    res.render('userViews/forHer', { isLoggedIn: req.session.isUserAuth });
-}
+// exports.forHer = (req, res) => {
+//     res.render('userViews/forHer', { isLoggedIn: req.session.isUserAuth });
+// }
 
 
 exports.userSignupEmailVerify = async (req, res) => {
@@ -78,12 +77,12 @@ exports.userSignup = (req, res) => {
 }
 
 exports.userSigninEmail = (req, res) => {
-    const signinfo = { name: req.session.fName, pass: req.session.pass, noUser: req.session.noUser, wrongPass: req.session.wrongPass, isBlock: req.session.userBlockedMesg }
+    const signinfo = { email: req.session.email, pass: req.session.pass, noUser: req.session.noUser, wrongPass: req.session.wrongPass, isBlock: req.session.userBlockedMesg }
     res.render('userViews/userSigninEmail', { signinfo: signinfo }, (err, html) => {
         if (err) {
             console.log(err);
         }
-        delete req.session.fName;
+        delete req.session.email;
         delete req.session.pass;
         delete req.session.noUser;
         delete req.session.wrongPass;
@@ -101,8 +100,6 @@ exports.userForgotPass = async (req, res) => {
         res.send(html)
     })
 }
-
-
 
 exports.userEnterOtp = (req, res) => {
     res.render('userViews/userEnterOtp', { email: req.session.verifyEmail, errorMesg: req.session.err, rTime: req.session.rTime }, (err, html) => {
@@ -129,5 +126,81 @@ exports.userResetPassword = (req, res) => {
     })
 }
 
+exports.userProfile = async (req, res) => {
+    const userId = req.session.isUserAuth
+    try {
+        const user = await axios.get(`http://localhost:${process.env.PORT}/api/getUserInfo?userId=${userId}`)
+        res.render('userViews/userProfile', { user: user.data })
+    } catch (err) {
+        console.log(err)
+    }
+}
 
+exports.userEditProfile = async (req, res) => {
+    const userId = req.session.isUserAuth
+    try {
+        const user = await axios.get(`http://localhost:${process.env.PORT}/api/getUserInfo?userId=${userId}`)
+        res.status(200).render('userViews/userEditProfile', {
+            user: user.data,
+            errMesg: {
+                fName: req.session.fName,
+                oldPass: req.session.oldPass,
+                newPass: req.session.newPass,
+                conNewPass: req.session.conNewPass,
+            }
+        },
+            (err, html) => {
+                if (err) {
+                    console.log("Render error edit profile");
+                    return res.send("Internal server error");
+                }
+                delete req.session.fName;
+                delete req.session.oldPass;
+                delete req.session.newPass;
+                delete req.session.conNewPass;
 
+                res.send(html);
+            }
+        )
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+exports.userAddress = async (req, res) => {
+    res.status(200).render('userViews/userAddress')
+}
+exports.userAddAddress = async (req, res) => {
+    try {
+        res.status(200).render('userViews/userAddAddress',
+            {
+                sInfo: req.session.sAddress,
+                errMesg: {
+                    fName: req.session.fName,
+                    pincode: req.session.pincode,
+                    locality: req.session.locality,
+                    address: req.session.address,
+                    district: req.session.district,
+                    state: req.session.state
+                },
+            },
+            (err, html) => {
+                if (err) {
+                    console.log("Render erorr at add address",err);
+                    return res.status(500).send("Internal server error");
+                }
+                delete req.session.fName;
+                delete req.session.pincode;
+                delete req.session.locality;
+                delete req.session.address;
+                delete req.session.district;
+                delete req.session.state;
+                delete req.session.sAddress;
+
+                res.send(html);
+            }
+        )
+    } catch (err) {
+        console.log(err);
+    }
+}

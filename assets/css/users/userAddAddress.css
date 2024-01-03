@@ -44,27 +44,7 @@ body {
     line-height: normal;
 } 
 
-/* her and him on nav */
-#him {
-    padding-right: 50px;
 
-}
-
-#her {
-    padding-right: 100px;
-}
-
-.him {
-    font-family: Staatliches;
-    font-size: 50px;
-
-}
-
-.her {
-    font-family: Staatliches;
-    font-size: 40px;
-    padding-top: 15px;
-}
 
 /* search bar */
 .form {
@@ -79,7 +59,7 @@ body {
 }
 
 .form-input::placeholder {
-    color: white;
+    color: rgb(0, 0, 0);
 }
 
 .form-input {
@@ -109,19 +89,15 @@ body {
 }
 
 /* main image */
-/* .img {
-    justify-content: center;
+.img {
     margin-top: 50px;
-    max-width: 800px;
-    max-height: 500px;
+    width: 100%;
 }
 
 #intro {
     background-repeat: no-repeat;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-} */
+    background-size: 100% auto;
+}
 
 .forhim {
     color: #000;
@@ -208,4 +184,20 @@ body {
     .img{
         margin-top: 20px;
     }
+}
+
+
+.colorgraph {
+    height: 20px;
+    border-top: 0;
+  /*   background: #c4e17f; */
+    border-radius: 5px;
+    background-image: -webkit-linear-gradient(left, #c4e17f, #c4e17f 12.5%, #f7fdca 12.5%, #f7fdca 25%, #fecf71 25%, #fecf71 37.5%, #f0776c 37.5%, #f0776c 50%, #db9dbe 50%, #db9dbe 62.5%, #c49cde 62.5%, #c49cde 75%, #669ae1 75%, #669ae1 87.5%, #62c2e4 87.5%, #62c2e4);
+    background-image: -moz-linear-gradient(left, #c4e17f, #c4e17f 12.5%, #f7fdca 12.5%, #f7fdca 25%, #fecf71 25%, #fecf71 37.5%, #f0776c 37.5%, #f0776c 50%, #db9dbe 50%, #db9dbe 62.5%, #c49cde 62.5%, #c49cde 75%, #669ae1 75%, #669ae1 87.5%, #62c2e4 87.5%, #62c2e4);
+    background-image: -o-linear-gradient(left, #c4e17f, #c4e17f 12.5%, #f7fdca 12.5%, #f7fdca 25%, #fecf71 25%, #fecf71 37.5%, #f0776c 37.5%, #f0776c 50%, #db9dbe 50%, #db9dbe 62.5%, #c49cde 62.5%, #c49cde 75%, #669ae1 75%, #669ae1 87.5%, #62c2e4 87.5%, #62c2e4);
+    background-image: linear-gradient(to right, #c4e17f, #c4e17f 12.5%, #f7fdca 12.5%, #f7fdca 25%, #fecf71 25%, #fecf71 37.5%, #f0776c 37.5%, #f0776c 50%, #db9dbe 50%, #db9dbe 62.5%, #c49cde 62.5%, #c49cde 75%, #669ae1 75%, #669ae1 87.5%, #62c2e4 87.5%, #62c2e4);
+  }
+
+.custom-container{
+    max-width: 700px;
 }

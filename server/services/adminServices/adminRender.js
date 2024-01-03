@@ -113,9 +113,7 @@ exports.adminUpdateProduct = async (req, res) => {
     const [category, product] = await Promise.all([
       axios.post(`http://localhost:${process.env.PORT}/api/getCategory/1`),
       axios.get(`http://localhost:${process.env.PORT}/api/singleProduct/${req.params.id}`)]);
-    // const doc = await Productdb.findOne({ _id: req.params.id })  
-    // const { pName, brand, pDescription, price, units, files } = doc
-   
+
     res.status(200).render("adminViews/adminUpdateProduct", {
       category: category.data,
       product: product.data,

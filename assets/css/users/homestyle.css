@@ -112,7 +112,36 @@ body {
   box-sizing: border-box;
 }
 
+.carousel-item img {
+    max-height: 800px;
+    max-width: 800px;
+    /* width: 800;
+    height: 800; */
+}
 
+.columns-container {
+    display: flex;
+    justify-content: center;
+}
+
+.column-image {
+    max-width: 500px; /* Set your desired maximum width */
+    max-height: 500px; /* Set your desired maximum height */
+    width: auto;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+
+.qoute img {
+    max-width:1300px ; /* Set your desired maximum width */
+    max-height: 500px; /* Set your desired maximum height */
+    width: auto;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
 
 .row {
   display: -ms-flexbox; /* IE10 */
