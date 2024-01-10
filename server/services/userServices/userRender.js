@@ -25,11 +25,10 @@ exports.userProductDetail = async (req, res) => {
     try {
         const productId = req.query.productId
         const userId=req.session.isUserAuth;
-        console.log(productId, userId);
-        const product = await axios.get(`http://localhost:${process.env.PORT}/api/getProductDetail?productId=${productId}`)
+        // api to fetch details of the single product
+        const product = await axios.get(`http://localhost:${process.env.PORT}/api/getProductDetail?productId=${productId}`);
+        //checking if product is in the cart or not
         const isCartItem=await axios.post(`http://localhost:${process.env.PORT}/api/getCartItems?productId=${productId}&userId=${userId}`);
-        console.log(isCartItem.data);
-        // const isCartItem=req.session.inCart// Vkart
  
         res.render('userViews/userProductDetail', { isLoggedIn: req.session.isUserAuth, product: product.data[0], isCartItem: isCartItem.data})
     } catch (err) {

@@ -747,25 +747,13 @@ exports.usersAddToCart = async (req, res) => {
   const userId = req.session.isUserAuth
   const productId = req.query.productId
   try {
-    // const isCart = await Cartdb.findOne({ userId: userId })
+    //checking if the product already exist in cart
     const isItem = await Cartdb.findOne({ userId: userId, 'products.productId': productId })
-    console.log(isItem);
     if (isItem) {
-      // req.session.inCart=true
       return res.status(200).redirect(`/userProductDetail/${productId}`)
     }
 
-    // if (!isCart) {
-    // const newUsercart = new Cartdb({
-    //   userId: userId,
-    //   products: [
-    //     {
-    //       productId: productId
-    //     }
-    //   ]
-    // })
-    // await newUsercart.save()
-    // }
+    // insert new doc if not exist
     await Cartdb.updateOne(
       { userId: userId },
       { $push: { products: { productId: productId } } },
@@ -780,25 +768,15 @@ exports.usersAddToCart = async (req, res) => {
   }
 }
 exports.getCartItems = async (req, res) => {
-  console.log('richin')
   const userId = req.query.userId;
   const productId = req.query.productId
   try {
+    // if user not login show add to cart button for that send false
     if (userId === "undefined") {
       return res.send(false);
     }
-    // const cartItem = await Cartdb.findOne({ userId: userId });
-    // console.log(cartItem);
-    // if (!cartItem) {
-    //   return res.send(false);
-    // }
-    // const isItem = cartItem.products.find((value) => {
-    //   if (value.productId.toString() === req.query.productId) {
-    //     return true;
-    //   }
-    // });
     const isItem = await Cartdb.findOne({ userId: userId, 'products.productId': productId });
-    console.log(isItem);
+    //if product is there send true to show go cart button or false to show add to cart button
     if (isItem) {
       res.send(true);
     } else {
