@@ -760,7 +760,7 @@ exports.usersAddToCart = async (req, res) => {
       { upsert: true }
     )
 
-    return res.status(200).redirect(`/userProductDetail/${productId}`)
+    return res.status(200).redirect(`/userProductDetail?productId=${productId}`);
 
 
   } catch (err) {

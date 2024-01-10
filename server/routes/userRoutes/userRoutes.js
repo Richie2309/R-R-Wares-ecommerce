@@ -65,7 +65,7 @@ route.post('/userEditAddress', userAuthMiddleware.isUserAuth2, userController.us
 
 route.get('/deleteAddress', userAuthMiddleware.isUserAuth2, userController.deleteAddress)
 
-route.get('/usersAddToCart',userController.usersAddToCart)
+route.get('/usersAddToCart',userAuthMiddleware.isUserAuth2,userController.usersAddToCart)
 
 // //api
 route.get('/api/productByCategory', userController.productByCategory);
