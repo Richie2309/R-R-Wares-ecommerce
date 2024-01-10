@@ -18,9 +18,9 @@
 
 <body>
   <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-scroll shadow-0">
+  <nav class="navbar navbar-expand-lg navbar-scroll shadow-0 bg-dark">
     <div class="container">
-      <a class="navbar-brand" href="/">R&R <br>Wares</a>
+      <a class="navbar-brand text-light" href="/">R&R <br>Wares</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <i class="fas fa-bars"></i>
@@ -29,43 +29,50 @@
         <ul class="navbar-nav ms-auto">
           <li>
             <div class="form">
-              <i class="fa fa-search bg-black"></i>
-              <input type="text" class="form-control form-input bg-black text-light" placeholder="Search">
+              <i class="fa fa-search text-dark bg-light"></i>
+              <input type="text" class="form-control form-input bg-light text-black" placeholder="Search">
             </div>
           </li>
 
           <div class="left">
             <li class="nav-item p-1">
-              <div class="round bg-black p-">
-                <a class="nav-link" href="#!">
-                  <i class="fa-regular fa-heart text-light"></i>
-                </a>
-              </div>
+              <% if (isLoggedIn) { %>
+
+                <div class="round bg-light">
+                  <a class="nav-link" href="#!">
+                    <i class="fa-regular fa-heart text-dark"></i>
+                  </a>
+                </div>
+                <% } %>
             </li>
             <li class="nav-item p-1">
-              <div class="round bg-black">
+              <div class="round bg-light">
                 <a class="nav-link" href="userSigninEmail">
-                  <i class="fa-solid fa-user text-light"></i>
+                  <i class="fa-solid fa-user text-dark"></i>
                 </a>
               </div>
 
             </li>
             <li class="nav-item p-1">
-              <div class="round bg-black">
-                <a class="nav-link" href="#!">
-                  <i class="fa-solid fa-cart-shopping text-light"></i>
-                </a>
-              </div>
+              <% if (isLoggedIn) { %>
+
+                <div class="round bg-light">
+                  <a class="nav-link" href="#!">
+                    <i class="fa-solid fa-cart-shopping text-dark"></i>
+                  </a>
+                </div>
+                <% } %>
             </li>
             <li class="nav-item p-1">
               <% if (isLoggedIn) { %>
-                  <div class="round bg-black">
-                      <a class="nav-link" href="/userLogout">
-                          <button class="border-0 bg-black"><i class="fa-solid fa-right-from-bracket text-light bg-black"></i></button>
-                      </a>
-                  </div>
-                  <% } %>
-          </li>
+                <div class="round bg-light">
+                  <a class="nav-link" href="/userLogout">
+                    <button class="border-0 bg-light"><i
+                        class="fa-solid fa-right-from-bracket text-dark bg-light"></i></button>
+                  </a>
+                </div>
+                <% } %>
+            </li>
           </div>
         </ul>
       </div>
@@ -86,8 +93,8 @@
             <div class="thumbnail_images" class="justify-content-center align-items-center">
               <ul id="thumbnail">
                 <% for(let i=0;i<product.images.length; i++) {%>
-                <li><img onclick="changeImage(this)" src="<%= product.images[i] %>" width="70"></li>
-                <% } %>
+                  <li><img onclick="changeImage(this)" src="<%= product.images[i] %>" width="70"></li>
+                  <% } %>
               </ul>
             </div>
           </div>
@@ -95,12 +102,17 @@
         <div class="col-md-6">
           <div class="p-3 right-side">
             <div class="d-flex justify-content-between align-items-center">
-              <h3 class="mx-auto mt-1"><%= product.brand %></h3><br>
+              <h3 class="mx-auto mt-1">
+                <%= product.brand %>
+              </h3><br>
             </div>
 
             <div class="mt-2 pr-3 content">
-              <h4 class="mx-auto"><%= product.pName %><br></h4><br>
-              <h3>₹<%= product.price%></h3><br>
+              <h4 class="mx-auto">
+                <%= product.pName %><br>
+              </h4><br>
+              <h3>₹<%= product.price%>
+              </h3><br>
               <span>4.1<i class="fa-solid fa-star" style="color: #fcf41d;"></i></span>
 
               <div class="ratings d-flex flex-row align-items-center text-center">
@@ -111,62 +123,72 @@
               </div>
 
               <div class="d-flex flex-column align-items-center mt-4">
-
-                <div class="form-outline text-center">
-                  <input type="number" id="typeNumber" class="form-control" value="1" min="1" style="width: 75px;" />
-                </div>
-
                 <div class="buttons d-flex flex-row mt-5 gap-3">
-                  <button class="btn btn-warning text-center"><i class="fa-solid fa-bag-shopping px-2" style="color: #ffffff;"></i>Add to Cart</button>
+
+                  <% if(isCartItem) {%>
+                    <a href="/userCart">
+                      <button class="btn btn-warning text-center"><i class="fa-solid fa-bag-shopping px-2"
+                          style="color: #ffffff;"></i>Go to Cart</button>
+                    </a>
+                    <% } else{%>
+                      
+                        <a href="/usersAddToCart?productId=<%= product._id %>">
+                          <button class="btn btn-warning text-center"><i class="fa-solid fa-bag-shopping px-2"
+                              style="color: #ffffff;"></i>Add to Cart</button>
+                        </a>
+                      
+                          <% } %>
+
                 </div>
               </div>
             </div>
           </div>
-        </div><hr>
+        </div>
+        <hr>
       </div>
     </div>
   </div>
-   <div class="container text-bg-light align-items-end justify-content-xl-end">
-      <h5>Product Details</h5>
-        <p>
-       <%= product.pDescription %>
-      </p>
-      <hr>
-      Ratings & Revews <span>4.1<i class="fa-solid fa-star" style="color: #fcf41d;"></i></span>
-      <br>
-      <span>5<i class="fa-solid fa-star" style="color: #fcf41d;"></i></span></span>
-      <p>Nice</p>
-      <span>User A</span>
-    </div><br>
+  <div class="container text-bg-light align-items-end justify-content-xl-end">
+    <h5>Product Details</h5>
+    <p>
+      <%= product.pDescription %>
+    </p>
+    <hr>
+    Ratings & Revews <span>4.1<i class="fa-solid fa-star" style="color: #fcf41d;"></i></span>
+    <br>
+    <span>5<i class="fa-solid fa-star" style="color: #fcf41d;"></i></span></span>
+    <p>Nice</p>
+    <span>User A</span>
+  </div><br>
 
-    <div class="border border-1 border-black"></div>
+  <div class="border border-1 border-black"></div>
 
-      <!-- Footer -->
-  <footer class="text-center text-lg-start text-dark" style="background-color: #ffffff;">
+  <!-- Footer -->
+  <footer class="text-center text-lg-start text-dark" style="background-color: #000000;">
     <!-- Grid container -->
     <div class="container p-4 pb-0">
       <!-- Section: Links -->
       <section class="">
         <!--Grid row-->
-        <div class="row">
+        <div class="footer row">
 
 
           <hr class="w-100 clearfix d-md-none" />
 
           <!-- Grid column -->
           <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mt-3">
-            <h6 class="text-uppercase mb-4 font-weight-bold">About</h6>
+            <h6 class="text-uppercase mb-4 font-weight-bold text-light">About</h6>
             <p>
-              <a class="text-dark  text-decoration-none" href="">Contact Us</a>
+              <a class="text-light  text-decoration-none" href="">Contact Us</a>
             </p>
             <p>
-              <a class="text-dark  text-decoration-none" href="">About Us</a>
+              <a class="text-light  text-decoration-none" href="">About Us</a>
             </p>
             <p>
-              <a class="text-dark text-decoration-none" href="">Return & Refunds</a>
+              <a class="text-light text-decoration-none" href="">Return & Refunds</a>
             </p>
             <p>
-              <a class="text-dark text-decoration-none" href="">FAQ'S</a>
+              <a class="text-light text-decoration-none" href="">FAQ'S</a>
             </p>
           </div>
           <!-- Grid column -->
@@ -175,17 +197,17 @@
 
           <!-- Grid column -->
           <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mt-3">
-            <h6 class="text-uppercase mb-4 font-weight-bold">
+            <h6 class="text-uppercase mb-4 font-weight-bold text-light">
               More info
             </h6>
             <p>
-              <a class="text-dark text-decoration-none" href="">Terms and Conditions</a>
+              <a class="text-light text-decoration-none" href="">Terms and Conditions</a>
             </p>
             <p>
-              <a class="text-dark text-decoration-none" href="">Privacy Policy</a>
+              <a class="text-light text-decoration-none" href="">Privacy Policy</a>
             </p>
             <p>
-              <a class="text-dark text-decoration-none" href="">Shipping Policy</a>
+              <a class="text-light text-decoration-none" href="">Shipping Policy</a>
             </p>
           </div>
 
@@ -193,8 +215,8 @@
           <hr class="w-100 clearfix d-md-none" />
 
           <!-- Grid column -->
-          <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mt-3">
-            <h6 class="text-uppercase mb-4 font-weight-bold">Location</h6>
+          <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mt-3 text-light">
+            <h6 class="text-uppercase mb-4 font-weight-bold text-light">Location</h6>
             <p>support@r&rwares.com</p>
             <p> 222 Avenue Tokyo, 727487, Japan </p>
             <p>Telephone: 044-456147000</p>
@@ -214,7 +236,7 @@
         <div class="col-md-12 text-center text-md-center">
           <!-- Copyright -->
           <div class="p-3 ">
-            <p class="text-dark">Copyright © 2023 R@R Wares Pvt Ltd. All rights reserved.</p>
+            <p class="text-light">Copyright © 2023 R@R Wares Pvt Ltd. All rights reserved.</p>
           </div>
           <!-- Copyright -->
         </div>
@@ -223,16 +245,16 @@
         <!-- Grid column -->
         <div class="col-md-12 text-center">
           <!-- Facebook -->
-          <a class="btn btn-outline-light btn-floating m-1" class="text-dark" role="button"><i
-              class="fab fa-facebook-f text-dark"></i></a>
+          <a class="btn btn-outline-light btn-floating m-1" class="text-light" role="button"><i
+              class="fab fa-facebook-f"></i></a>
 
           <!-- Twitter -->
-          <a class="btn btn-outline-light btn-floating m-1" class="text-dark" role="button"><i
-              class="fab fa-twitter text-dark"></i></a>
+          <a class="btn btn-outline-light btn-floating m-1" class="text-light" role="button"><i
+              class="fab fa-twitter"></i></a>
 
           <!-- Instagram -->
-          <a class="btn btn-outline-light btn-floating m-1" class="text-dark" role="button">
-            <i class="fab fa-instagram text-dark"></i></a>
+          <a class="btn btn-outline-light btn-floating m-1" class="text-light" role="button"><i
+              class="fab fa-instagram"></i></a>
         </div>
         <!-- Grid column -->
       </div>

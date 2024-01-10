@@ -10,6 +10,7 @@ const UnlistedProductdb = require('../../model/adminModel/productModel').unliste
 const fs = require("fs");
 const path = require("path");
 const Categorydb = require("../../model/adminModel/categoryModel");
+const session = require("express-session");
 
 
 //Sign in and out
@@ -76,6 +77,40 @@ exports.getCategory = async (req, res) => {
     const result = await Categorydb.find({ status: false });
     res.send(result);
   }
+}
+
+exports.adminUpdateCategory = async (req, res) => {
+  const id=req.query.id
+  const name=req.body.name
+  // console.log(req.query);
+  console.log("hi");
+  try {
+    if (name==='undefined'||!name) {
+      console.log("undefined");
+      req.session.category = `Category name cannot be empty`;
+      const referer = req.get('Referrer')
+      return res.redirect(303,referer);
+    }else{
+          await Categorydb.updateOne(
+      { _id:id },
+      { $set: { name: name } }
+    );
+    delete req.session.category
+    res.redirect('/adminCategoryManage')
+    }
+    
+
+  } catch (error) {
+    res.status(500).send('Internal Server Error');
+  }
+}
+
+exports.singleCategory = async (req, res) => {
+  const id =req.query.id
+  console.log(id);
+  const result = await Categorydb.findOne({_id:id})
+  console.log(result);
+  res.send(result)
 }
 
 exports.adminUnlistedCategory = async (req, res) => {
@@ -220,8 +255,7 @@ exports.adminRestoreProduct = async (req, res) => {
 exports.adminUpdateProduct = async (req, res) => {
   const { pName, brand, category, pDescription, price, units } = req.body
   const files = req.files
-  console.log(req.body);
-  console.log(files);
+
   try {
     if (!pName) {
       req.session.pName = "This Field is required";

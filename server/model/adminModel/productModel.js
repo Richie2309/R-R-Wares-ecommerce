@@ -7,11 +7,11 @@ const productSchema = new mongodb.Schema({
     },
     brand: {
         type: String,
-        required: true
+        required: true//objid
     },
     category: {
         type: String,
-        required: true
+        required: true//objid
     },
     pDescription: {
         type: String,

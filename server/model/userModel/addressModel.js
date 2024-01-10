@@ -30,6 +30,10 @@ const userAddressSchema = new mongoose.Schema({
             state: {
                 type: String,
                 required: true
+            },
+            structuredAddress: {
+                type: String,
+                required: true
             }
         }
     ],

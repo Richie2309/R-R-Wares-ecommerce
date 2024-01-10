@@ -24,19 +24,18 @@ exports.singleProductCategory = async (req, res) => {
 exports.userProductDetail = async (req, res) => {
     try {
         const productId = req.query.productId
+        const userId=req.session.isUserAuth;
+        console.log(productId, userId);
         const product = await axios.get(`http://localhost:${process.env.PORT}/api/getProductDetail?productId=${productId}`)
-        res.render('userViews/userProductDetail', { isLoggedIn: req.session.isUserAuth, product: product.data[0] })
+        const isCartItem=await axios.post(`http://localhost:${process.env.PORT}/api/getCartItems?productId=${productId}&userId=${userId}`);
+        console.log(isCartItem.data);
+        // const isCartItem=req.session.inCart// Vkart
+ 
+        res.render('userViews/userProductDetail', { isLoggedIn: req.session.isUserAuth, product: product.data[0], isCartItem: isCartItem.data})
     } catch (err) {
         console.log(err);
     }
 }
-
-
-//Women's Page
-// exports.forHer = (req, res) => {
-//     res.render('userViews/forHer', { isLoggedIn: req.session.isUserAuth });
-// }
-
 
 exports.userSignupEmailVerify = async (req, res) => {
     res.render('userViews/userSignupEmail', { isUser: req.session.isUser }, (err, html) => {
@@ -168,8 +167,16 @@ exports.userEditProfile = async (req, res) => {
 }
 
 exports.userAddress = async (req, res) => {
-    res.status(200).render('userViews/userAddress')
+    const userId = req.session.isUserAuth
+    try {
+        const user = await axios.get(`http://localhost:${process.env.PORT}/api/getAddress?userId=${userId}`)
+        res.status(200).render('userViews/userAddress',{userInfo: user.data})
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Internal Server Error");
+    }
 }
+
 exports.userAddAddress = async (req, res) => {
     try {
         res.status(200).render('userViews/userAddAddress',
@@ -186,7 +193,7 @@ exports.userAddAddress = async (req, res) => {
             },
             (err, html) => {
                 if (err) {
-                    console.log("Render erorr at add address",err);
+                    console.log("Render erorr at add address", err);
                     return res.status(500).send("Internal server error");
                 }
                 delete req.session.fName;
@@ -203,4 +210,52 @@ exports.userAddAddress = async (req, res) => {
     } catch (err) {
         console.log(err);
     }
+}
+
+exports.userEditAddress= async(req,res)=>{
+    const userId = req.session.isUserAuth
+    const addressId=req.query.addressId
+    console.log(addressId);
+    try{
+        const address = await axios.get(`http://localhost:${process.env.PORT}/api/getAddress?userId=${userId}&addressId=${addressId}`)
+        console.log(address.data);
+        res.status(200).render('userViews/userEditAddress',
+        {
+            sInfo: req.session.sAddress,
+            addressInfo: address.data,
+            errMesg: {
+                fName: req.session.fName,
+                pincode: req.session.pincode,
+                locality: req.session.locality,
+                address: req.session.address,
+                district: req.session.district,
+                state: req.session.state,
+                exist: req.session.exist
+            },
+        },
+        (err, html) => {
+            if (err) {
+                console.log("Render erorr at edit address", err);
+                return res.status(500).send("Internal server error");
+            }
+            delete req.session.fName;
+            delete req.session.pincode;
+            delete req.session.locality;
+            delete req.session.address;
+            delete req.session.district;
+            delete req.session.state;
+            delete req.session.exist;
+            delete req.session.sAddress;
+
+            res.send(html);
+        }
+        )
+
+    }catch(err){
+        console.log("Update query err:", err);
+    }
+}
+
+exports.userCart=async(req,res)=>{
+    res.render('userViews/userCart')
 }

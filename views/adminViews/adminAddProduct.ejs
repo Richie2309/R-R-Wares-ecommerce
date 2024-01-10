@@ -135,15 +135,15 @@
                     previewImage.src = event.target.result;
                     previewImage.className = 'preview-image';
 
-                    var closeIcon = document.createElement('span');
-                    closeIcon.innerHTML = '&times;';
-                    closeIcon.className = 'close-icon';
-                    closeIcon.onclick = function () {
-                        imageContainer.remove();
-                    };
+                    // var closeIcon = document.createElement('span');
+                    // closeIcon.innerHTML = '&times;';
+                    // closeIcon.className = 'close-icon';
+                    // closeIcon.onclick = function () {
+                    //     imageContainer.remove();
+                    // };
 
                     imageContainer.appendChild(previewImage);
-                    imageContainer.appendChild(closeIcon);
+                    // imageContainer.appendChild(closeIcon);
 
                     previewContainer.appendChild(imageContainer);
                 }

@@ -6,15 +6,16 @@ const nodemailer = require("nodemailer");
 const Mailgen = require("mailgen");
 const { default: mongoose } = require("mongoose");
 const Categorydb = require('../../model/adminModel/categoryModel')
+const Cartdb = require('../../model/userModel/cartModel')
 const Productdb = require('../../model/adminModel/productModel');
 const { query } = require('express');
-const userAddressdb=require('../../model/userModel/addressModel')
+const userAddressdb = require('../../model/userModel/addressModel')
 // const dotenv = config({ path: 'congif.env' })
 
 function capitalizeFirstLetter(str) {
   str = str.toLowerCase();
   return str.charAt(0).toUpperCase() + str.slice(1);
-} 
+}
 
 const deleteOtpFromdb = async (_id) => {
   await Otpdb.deleteOne({ _id });
@@ -150,12 +151,7 @@ exports.userSignupEmailVerify = async (req, res) => {
 
 
 exports.userSignupOtpVerify = async (req, res) => {
-  // const id = req.session.otpId
-  // console.log(id);
   try {
-    // const data = await Otpdb.findOne({ _id: id })
-    // console.log(data);
-    // /////////
     if (!req.body.otp) {
       req.session.err = `This Field is required`;
     }
@@ -174,17 +170,6 @@ exports.userSignupOtpVerify = async (req, res) => {
     console.log("Internal delete error", err);
     res.status(500).send("Error while quering data err:");
   }
-  /////////////////
-  //   if (data.otp == req.body.otp) {
-  //     res.redirect('/userSignup')
-  //   } else {
-  //     req.session.err = "Invalid OTP"
-  //     res.redirect('/userSignupOtpVerify')
-  //   }
-
-  // } catch (err) {
-  //   console.log(err);
-  // }
 }
 
 exports.userSignupEmailVerifyResend = async (req, res) => {
@@ -198,7 +183,6 @@ exports.userSignupEmailVerifyResend = async (req, res) => {
     console.log("Resend Mail err:", err);
   }
 }
-
 
 exports.userSignup = async (req, res) => {
   const userInfo = {};
@@ -407,7 +391,6 @@ exports.productByCategory = async (req, res) => {
 
     const result = await Productdb.find({ category: category, listed: true });
     res.send(result);
-    console.log(result);
   } catch (err) {
     console.log("Error:", err);
     res.status(500).render("errorPages");
@@ -424,6 +407,7 @@ exports.userProductDetail = async (req, res) => {
   }
 }
 
+//----PROFILE----//
 exports.userInfo = async (req, res) => {
   const userId = req.query.userId
   try {
@@ -500,7 +484,49 @@ exports.userEditProfile = async (req, res) => {
     console.log(err);
   }
 }
-exports.userAddAddress= async (req, res) => {
+
+
+//----ADDRESS----//
+exports.addressInfo = async (req, res) => {
+  const userId = req.query.userId;
+  const addressId = req.query.addressId;
+  try {
+    if (!addressId) {
+      const address = await userAddressdb.findOne({
+        "userId": userId
+      }).populate('defaultAddress');
+      res.send(address);
+    }
+    else {
+      const address = await userAddressdb.findOne({
+        "userId": userId
+      })
+      const oneAdd = address.address.find(element => {
+        return String(element._id) === addressId
+      })
+      console.log(oneAdd);
+      res.send(oneAdd);
+    }
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("internal server error");
+  }
+}
+
+exports.changeAddress = async (req, res) => {
+  try {
+    await userAddressdb.updateOne(
+      { userId: req.session.isUserAuth },
+      { $set: { defaultAddress: req.query.id } }
+    );
+    res.status(200).redirect("/userAddress");
+  } catch (err) {
+    res.status(500).send("Internal server error");
+  }
+}
+
+exports.userAddAddress = async (req, res) => {
   try {
     if (!req.body.fName) {
       req.session.fName = `This Field is required`;
@@ -538,7 +564,7 @@ exports.userAddAddress= async (req, res) => {
       return res.status(401).redirect("/userAddAddress");
     }
 
-    req.body.fName = capitalizeFirstLetter(req.body.fName);
+    req.body.fullName = capitalizeFirstLetter(req.body.fName);
     req.body.locality = capitalizeFirstLetter(req.body.locality);
     req.body.district = capitalizeFirstLetter(req.body.district);
     req.body.state = capitalizeFirstLetter(req.body.state);
@@ -557,18 +583,20 @@ exports.userAddAddress= async (req, res) => {
       req.session.exist = `This address already exist`;
       return res.status(401).redirect("/userAddAddress");
     }
+    console.log('req.body:', req.body);
+    console.log('req.query.addressId:', req.query.addressId);
 
-    const structuredAddress = `${req.body.fName}, ${address}, ${req.body.locality}, ${req.body.district}, ${req.body.state} - ${req.body.pincode}`;
+    const structuredAddress = `${req.body.fName}, ${req.body.address}, ${req.body.locality}, ${req.body.district}, ${req.body.state} - ${req.body.pincode}`;
 
     await userAddressdb.updateOne(
       { userId: req.session.isUserAuth },
       {
         $push: {
           address: {
-            fname: req.body.fName,
+            fullName: req.body.fName,
             pincode: req.body.pincode,
             locality: req.body.locality,
-            addres: req.body.address,
+            address: req.body.address,
             district: req.body.district,
             state: req.body.state,
             structuredAddress,
@@ -589,8 +617,195 @@ exports.userAddAddress= async (req, res) => {
       );
     }
 
-    res.status(200).redirect("/userEditAddress");
+    res.status(200).redirect("/userProfile");
   } catch (err) {
     console.log(err);
+  }
+}
+
+exports.userEditAddress = async (req, res) => {
+  const addressId = req.query.addressId;
+  const userId = req.session.isUserAuth
+  try {
+    req.body.fName = req.body.fName.trim()
+    req.body.locality = req.body.locality.trim()
+    req.body.address = req.body.address.trim()
+    req.body.state = req.body.state.trim()
+    req.body.district = req.body.district.trim()
+
+    if (!req.body.fName) {
+      req.session.fName = `This Field is required`;
+    }
+
+    if (!req.body.pincode) {
+      req.session.pincode = `This Field is required`;
+    }
+
+    if (!req.body.locality) {
+      req.session.locality = `This Field is required`;
+    }
+
+    if (!req.body.address) {
+      req.session.address = `This Field is required`;
+    }
+
+    if (!req.body.district) {
+      req.session.district = `This Field is required`;
+    }
+
+    if (!req.body.state) {
+      req.session.state = `This Field is required`;
+    }
+
+    if (
+      req.session.fName ||
+      req.session.pincode ||
+      req.session.locality ||
+      req.session.address ||
+      req.session.district ||
+      req.session.state
+    ) {
+      req.session.sAddress = req.body;
+      return res.status(401).redirect("/userEditAddress");
+    }
+
+    req.body.fName = capitalizeFirstLetter(req.body.fName);
+    req.body.locality = capitalizeFirstLetter(req.body.locality);
+    req.body.district = capitalizeFirstLetter(req.body.district);
+    req.body.state = capitalizeFirstLetter(req.body.state);
+
+    // Validate if the addressId is provided
+    if (!addressId) {
+      return res.status(400).send("Address ID is required");
+    }
+
+    // Check if the address exists
+    const existingAddress = await userAddressdb.findOne({
+      userId: userId,
+      "address._id": addressId,
+    });
+
+    if (!existingAddress) {
+      return res.status(404).send("Address not found");
+    }
+
+    // Update the existing address
+    await userAddressdb.updateOne(
+      {
+        userId: userId,
+        "address._id": addressId,
+      },
+      {
+        $set: {
+          "address.$.fullName": fName,
+          "address.$.pincode": req.body.pincode,
+          "address.$.locality": locality,
+          "address.$.address": req.body.address,
+          "address.$.district": district,
+          "address.$.state": state,
+          "address.$.structuredAddress": `${req.body.fName}, ${req.body.address}, ${req.body.locality}, ${req.body.district}, ${req.body.state} - ${req.body.pincode}`
+        },
+      }
+    );
+
+    res.status(200).redirect("/userAddress");
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Internal Server Error");
+  }
+}
+
+exports.deleteAddress = async (req, res) => {
+  try {
+    const address = await userAddressdb.findOneAndUpdate(
+      { userId: req.session.isUserAuth },
+      { $pull: { address: { _id: req.query.addressId } } }
+    );
+
+    if (
+      String(address.defaultAddress) === req.query.addressId &&
+      address.address.length > 1
+    ) {
+      const addres = await userAddressdb.findOne({
+        userId: req.session.isUserAuth,
+      });
+
+      await userAddressdb.updateOne(
+        { userId: req.session.isUserAuth },
+        { $set: { defaultAddress: addres.address[0]._id } }
+      );
+    }
+    res.status(200).redirect("/userAddress");
+  } catch (err) {
+    console.log("err");
+    res.status(500).send(err);
+  }
+}
+
+//----CART----//
+exports.usersAddToCart = async (req, res) => {
+  const userId = req.session.isUserAuth
+  const productId = req.query.productId
+  try {
+    // const isCart = await Cartdb.findOne({ userId: userId })
+    const isItem = await Cartdb.findOne({ userId: userId, 'products.productId': productId })
+    console.log(isItem);
+    if (isItem) {
+      // req.session.inCart=true
+      return res.status(200).redirect(`/userProductDetail/${productId}`)
+    }
+
+    // if (!isCart) {
+    // const newUsercart = new Cartdb({
+    //   userId: userId,
+    //   products: [
+    //     {
+    //       productId: productId
+    //     }
+    //   ]
+    // })
+    // await newUsercart.save()
+    // }
+    await Cartdb.updateOne(
+      { userId: userId },
+      { $push: { products: { productId: productId } } },
+      { upsert: true }
+    )
+
+    return res.status(200).redirect(`/userProductDetail/${productId}`)
+
+
+  } catch (err) {
+    res.status(500).send("Internal server error")
+  }
+}
+exports.getCartItems = async (req, res) => {
+  console.log('richin')
+  const userId = req.query.userId;
+  const productId = req.query.productId
+  try {
+    if (userId === "undefined") {
+      return res.send(false);
+    }
+    // const cartItem = await Cartdb.findOne({ userId: userId });
+    // console.log(cartItem);
+    // if (!cartItem) {
+    //   return res.send(false);
+    // }
+    // const isItem = cartItem.products.find((value) => {
+    //   if (value.productId.toString() === req.query.productId) {
+    //     return true;
+    //   }
+    // });
+    const isItem = await Cartdb.findOne({ userId: userId, 'products.productId': productId });
+    console.log(isItem);
+    if (isItem) {
+      res.send(true);
+    } else {
+      res.send(false);
+    }
+  } catch (err) {
+    console.log("err");
+    res.status(500).send("Interal server error")
   }
 }

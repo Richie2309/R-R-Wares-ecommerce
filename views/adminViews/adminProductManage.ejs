@@ -104,14 +104,26 @@
 												<span class="bg-light">₹<%= products[i].price %></span>
 											</td>
 											<td class="text-center vertical-center">
-												<p class="bg-light"><a href="/adminUpdateProduct/<%= products[i]._id %>">
-													<i  class="fa-regular fa-pen-to-square bg-light"></i></a></p>
 												<p class="bg-light"><a
-														href="/adminUnlistedProduct/<%= products[i]._id %>"><i
-															class="fa-solid fa-trash fs-5 bg-light p-lg-3"></i></a></p>
+														href="/adminUpdateProduct/<%= products[i]._id %>">
+														<i class="fa-regular fa-pen-to-square bg-light"></i></a></p>
+												<p class="bg-light">
+													<button type="button" class="delete-product-btn"
+														data-product-id="<%= products[i]._id %>">
+														<i class="fa-solid fa-trash fs-5 bg-light"></i>
+													</button>
+
+													<!-- <a href="/adminUnlistedProduct/<%= products[i]._id %>"><i
+															class="fa-solid fa-trash fs-5 bg-light p-lg-3"></i>
+													</a> -->
+												</p>
 											</td>
 										</tr>
-										<% } %>
+										<a href="/adminUnlistedProduct/<%= products[i]._id %>">
+											<% } %>
+												<% if(products.length==0){ %>
+													<h3 class="text-center">No Products</h3>
+													<% } %>
 
 								</tbody>
 							</table>
@@ -121,6 +133,36 @@
 			</div>
 		</div>
 	</div>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.0.0/dist/sweetalert2.all.min.js"></script>
+	<script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Handle click on delete button
+            document.querySelectorAll('.delete-product-btn').forEach(function (button) {
+                button.addEventListener('click', function () {
+                    var productId = this.getAttribute('data-product-id');
+
+                    // Use SweetAlert2 for confirmation
+                    Swal.fire({
+                        title: "Are you sure?",
+                        text: "You want to delete this?",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Yes, delete it!"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // If confirmed, proceed with deletion
+
+                            window.location.href = "/adminUnlistedProduct/" + productId;
+
+                        }
+
+                    });
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>

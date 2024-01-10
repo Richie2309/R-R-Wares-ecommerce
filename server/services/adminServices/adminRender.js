@@ -109,7 +109,6 @@ exports.adminAddProduct = async (req, res) => {
 
 exports.adminUpdateProduct = async (req, res) => {
   try {
-    console.log(req.params.id);
     const [category, product] = await Promise.all([
       axios.post(`http://localhost:${process.env.PORT}/api/getCategory/1`),
       axios.get(`http://localhost:${process.env.PORT}/api/singleProduct/${req.params.id}`)]);
@@ -186,6 +185,18 @@ exports.adminAddCategory = (req, res) => {
     delete req.session.errMesg;
     res.send(html);
   })
+}
+
+exports.adminUpdateCategory = async (req, res) => {
+  try {
+    const category = await axios.get(`http://localhost:${process.env.PORT}/api/getSingleCategory?id=${req.query.id}`)
+    res.status(200).render('adminViews/adminUpdateCategory',
+      { category: category.data, errMesg: req.session.category })
+      // console.log(category);
+  } catch (err) {
+    // console.log("err", err.message);
+    res.send("Internal server err");
+  }
 }
 
 exports.adminUnlistedCategory = async (req, res) => {

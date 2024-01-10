@@ -79,7 +79,7 @@ body {
 }
 
 .form-input::placeholder {
-    color: white;
+    color: rgb(0, 0, 0);
 }
 
 .form-input {

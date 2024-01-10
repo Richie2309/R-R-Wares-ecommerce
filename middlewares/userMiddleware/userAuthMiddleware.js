@@ -9,7 +9,7 @@ module.exports = {
         }
     },
 
- 
+
     isUserAuth: (req, res, next) => {
         if (req.session.isUserAuth) {
             res.redirect('/');
@@ -17,13 +17,21 @@ module.exports = {
             next();
         }
     },
-    userLoginResetPassword: (req, res, next) => {
-        if(req.session.resetPasswordPage) {
+
+    isUserAuth2: (req, res, next) => {
+        if (req.session.isUserAuth) {
             next();
-        }else{
-            res.redirect('/userSigninEmail');
+        } else {
+            res.redirect('/');
         }
     },
+    // userLoginResetPassword: (req, res, next) => {
+    //     if (req.session.resetPasswordPage) {
+    //         next();
+    //     } else {
+    //         res.redirect('/userSigninEmail');
+    //     }
+    // },
     isUserBlocked: async (req, res, next) => {
         try {
             if (!req.session.isUserAuth) {

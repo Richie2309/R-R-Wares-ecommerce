@@ -86,37 +86,37 @@
         <form class="row" method="post" action="/userAddAddress">
             <hr class="colorgraph">
             <div class="col-md-12 mx-auto my-3">
-                <input type="text" class="form-control border-3" id="inputEmail4" name="fName" placeholder="Full Name">
+                <input type="text" class="form-control border-3" id="inputEmail4" name="fName" placeholder="Full Name" value="<%= sInfo?.fName?sInfo.fName:'' %>">
                 <p class="error m-0 text-danger">
                     <%=errMesg.fName%>
                   </p>
             </div>
             <div class="col-md-6 mx-auto my-3">
-                <input type="number" class="form-control border-3" id="inputEmail4" name="pincode" placeholder="Pincode">
+                <input type="number" class="form-control border-3" id="inputEmail4" name="pincode" placeholder="Pincode" value="<%= sInfo?.pincode?sInfo.pincode:'' %>">
                 <p class="error m-0 text-danger">
                     <%=errMesg.pincode%>
                   </p>
             </div>
             <div class="col-md-6 mx-auto my-3">
-                <input type="text" class="form-control border-3" id="inputPassword4" name="locality" placeholder="Locality">
+                <input type="text" class="form-control border-3" id="inputPassword4" name="locality" placeholder="Locality" value="<%= sInfo?.locality?sInfo.locality:'' %>">
                 <p class="error m-0 text-danger">
                     <%=errMesg.locality%>
                   </p>
             </div>
             <div class="col-md-12 mx-auto my-3">
-                <input type="text" class="form-control border-3" id="inputAddress" name="address" placeholder="Address">
+                <input type="text" class="form-control border-3" id="inputAddress" name="address" placeholder="Address" value="<%= sInfo?.address?sInfo.address:'' %>">
                 <p class="error m-0 text-danger">
                     <%=errMesg.address%>
                   </p>
             </div>
             <div class="col-md-6 mx-auto my-3">
-                <input type="text" class="form-control border-3" id="inputAddress2" name="district" placeholder="District">
+                <input type="text" class="form-control border-3" id="inputAddress2" name="district" placeholder="District" value="<%= sInfo?.district?sInfo.district:'' %>">
                 <p class="error m-0 text-danger">
                     <%=errMesg.district%>
                   </p>
             </div>
             <div class="col-md-6 mx-auto my-3">
-                <input type="text" class="form-control border-3" id="inputAddress2" name="state" placeholder="State">
+                <input type="text" class="form-control border-3" id="inputAddress2" name="state" placeholder="State" value="<%= sInfo?.state?sInfo.state:'' %>">
                 <p class="error m-0 text-danger">
                     <%=errMesg.state%>
                   </p>
