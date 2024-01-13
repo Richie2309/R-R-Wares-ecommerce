@@ -43,52 +43,59 @@
 
                 <div class="col-md-6">
                     <label for="validateProductName" class="form-label">Product Name</label>
-                    <input type="text" class="form-control" name="pName" value="<%= product[0].pName%>" id="validateProductName">
+                    <input type="text" class="form-control" name="pName" value="<%= product[0].pName%>"
+                        id="validateProductName">
                     <p class="text-danger">
                         <%=errMesg?.pName %>
-                      </p>
+                    </p>
                     <small class="text-danger"></small>
                 </div>
                 <div class="col-md-6">
                     <label for="validatebrand" class="form-label">Brand</label>
-                    <input type="text" class="form-control" name="brand" value="<%=product[0].brand %>" id="validatebrand">
+                    <input type="text" class="form-control" name="brand" value="<%=product[0].brand %>"
+                        id="validatebrand">
                     <p class="text-danger">
                         <%=errMesg?.brand %>
-                      </p>
+                    </p>
                     <small class="text-danger"></small>
                 </div>
-                
+
                 <div class="col-6">
                     <label for="validateCaseShape" class="form-label">Product Details</label>
-                    <input type="text" class="form-control larger" name="pDescription" value="<%= product[0].pDescription%>" id="validateCaseShape">
+                    <input type="text" class="form-control larger" name="pDescription"
+                        value="<%= product[0].pDescription%>" id="validateCaseShape">
                     <p class="text-danger">
                         <%=errMesg?.pDescription %>
-                      </p>
+                    </p>
                     <small class="text-danger"></small>
                 </div>
                 <div class="col-md-2">
                     <label for="validatePrice" class="form-label">Price</label>
-                    <input type="number" class="form-control" name="price" value="<%= product[0].price%>" id="validatePrice">
+                    <input type="number" class="form-control" name="price" value="<%= product[0].price%>"
+                        id="validatePrice">
                     <p class="text-danger">
                         <%=errMesg?.price %>
-                      </p>
-                      <small class="text-danger"></small>
+                    </p>
+                    <small class="text-danger"></small>
                 </div>
                 <div class="col-md-2">
                     <label for="validateOffer" class="form-label">Units</label>
-                    <input type="number" class="form-control" name="units" value="<%= product[0].units %>" id="validateOffer">
+                    <input type="number" class="form-control" name="units" value="<%= product[0].units %>"
+                        id="validateOffer">
                     <p class="text-danger">
                         <%=errMesg?.units %>
-                      </p>
+                    </p>
                     <small class="text-danger"></small>
                 </div>
-                
+
                 <div class="col-md-6">
                     <label for="validateCategory" class="form-label">Categories</label>
                     <select id="validateCategory" class="form-select form-control" name="category">
-                        <% for( let i = 0; i < category.length; i++ ) { %>
-                            <option class="text-capitalize" value="<%= category[i].name %>" <%= (product.category === category[i].name)?'selected':'' %>><%= category[i].name %></option>
-                        <% } %>
+                        <% for( let i=0; i < category.length; i++ ) { %>
+                            <option class="text-capitalize" value="<%= category[i].name %>"
+                                <%=(product.category===category[i].name)?'selected':'' %>><%= category[i].name %>
+                            </option>
+                            <% } %>
                     </select>
                 </div>
                 <div class="col-md-12 m-3  d-flex  justify-content-center">
@@ -96,19 +103,19 @@
                         <input class="form-control" type="file" id="formFileMultiple" name="images" multiple>
                         <p class="text-danger">
                             <%=errMesg?.files %>
-                          </p>
+                        </p>
                     </div>
                 </div>
 
                 <!-- Image Preview -->
                 <div class="d-flex justify-content-center mt-3">
-                    <div id="image-preview" class="col-md-6">
+                    <div id="image-preview">
                         <% for(let i=0; i<product[0].images.length; i++){ %>
-                            <img src=<%= product[0].images[i] %>>
-                        <% } %>
+                            <img src=<%=product[0].images[i] %> style="max-width: 200px; max-height: 100px;">
+                            <% } %>
                     </div>
                 </div>
-<!--  -->
+                <!--  -->
                 <div class="d-flex justify-content-center mt-3">
                     <button type="submit" class="btn btn-primary col-6">Update product</button>
                 </div>
@@ -118,42 +125,38 @@
     </div>
     <script>
         function previewImages() {
-              var previewContainer = document.getElementById('image-preview');
-              var filesInput = document.getElementById('formFileMultiple');
-              var files = filesInput.files;
-  
-              previewContainer.innerHTML = ''; // Clear previous previews
-  
-              for (var i = 0; i < files.length; i++) {
-                  var reader = new FileReader();
-  
-                  reader.onload = function (event) {
-                      var imageContainer = document.createElement('div');
-                      imageContainer.className = 'image-container';
-  
-                      var previewImage = document.createElement('img');
-                      previewImage.src = event.target.result;
-                      previewImage.className = 'preview-image';
-  
-                    //   var closeIcon = document.createElement('span');
-                    //   closeIcon.innerHTML = '&times;';
-                    //   closeIcon.className = 'close-icon';
-                    //   closeIcon.onclick = function () {
-                    //       imageContainer.remove();
-                    //   };
-  
-                      imageContainer.appendChild(previewImage);
-                    //   imageContainer.appendChild(closeIcon);
-  
-                      previewContainer.appendChild(imageContainer);
-                  }
-  
-                  reader.readAsDataURL(files[i]);
-              }
-          }
-  
-          document.getElementById('formFileMultiple').addEventListener('change', previewImages);
-      </script>
-       
+            var previewContainer = document.getElementById('image-preview');
+            var filesInput = document.getElementById('formFileMultiple');
+            var files = filesInput.files;
+
+            previewContainer.innerHTML = ''; // Clear previous previews
+
+            for (var i = 0; i < files.length; i++) {
+                var reader = new FileReader();
+
+                reader.onload = function (event) {
+    var imageContainer = document.createElement('div');
+    imageContainer.className = 'image-container';
+
+    var previewImage = document.createElement('img');
+    
+    // Use the onload event to ensure the image is fully loaded
+    previewImage.onload = function () {
+        previewImage.className = 'preview-image';
+        imageContainer.appendChild(previewImage);
+        previewContainer.appendChild(imageContainer);
+    };
+
+    previewImage.src = event.target.result;
+}
+
+                reader.readAsDataURL(files[i]);
+            }
+        }
+
+        document.getElementById('formFileMultiple').addEventListener('change', previewImages);
+    </script>
+
 </body>
+
 </html>

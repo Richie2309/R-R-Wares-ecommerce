@@ -1,5 +1,6 @@
 const axios = require('axios');
 const Productdb = require('../../model/adminModel/productModel');
+const userDbHelper = require('../../dbHelpers/userDbHelpers')
 
 exports.homepage = async (req, res) => {
     const category = await axios.post(`http://localhost:${process.env.PORT}/api/getCategory/1`);
@@ -24,13 +25,13 @@ exports.singleProductCategory = async (req, res) => {
 exports.userProductDetail = async (req, res) => {
     try {
         const productId = req.query.productId
-        const userId=req.session.isUserAuth;
+        const userId = req.session.isUserAuth;
         // api to fetch details of the single product
         const product = await axios.get(`http://localhost:${process.env.PORT}/api/getProductDetail?productId=${productId}`);
         //checking if product is in the cart or not
-        const isCartItem=await axios.post(`http://localhost:${process.env.PORT}/api/getCartItems?productId=${productId}&userId=${userId}`);
- 
-        res.render('userViews/userProductDetail', { isLoggedIn: req.session.isUserAuth, product: product.data[0], isCartItem: isCartItem.data})
+        const isCartItem = await axios.post(`http://localhost:${process.env.PORT}/api/getCartItems?productId=${productId}&userId=${userId}`);
+
+        res.render('userViews/userProductDetail', { isLoggedIn: req.session.isUserAuth, product: product.data[0], isCartItem: isCartItem.data })
     } catch (err) {
         console.log(err);
     }
@@ -169,7 +170,7 @@ exports.userAddress = async (req, res) => {
     const userId = req.session.isUserAuth
     try {
         const user = await axios.get(`http://localhost:${process.env.PORT}/api/getAddress?userId=${userId}`)
-        res.status(200).render('userViews/userAddress',{userInfo: user.data})
+        res.status(200).render('userViews/userAddress', { userInfo: user.data })
     } catch (err) {
         console.error(err);
         res.status(500).send("Internal Server Error");
@@ -211,50 +212,75 @@ exports.userAddAddress = async (req, res) => {
     }
 }
 
-exports.userEditAddress= async(req,res)=>{
+exports.userEditAddress = async (req, res) => {
     const userId = req.session.isUserAuth
-    const addressId=req.query.addressId
+    const addressId = req.query.addressId
     console.log(addressId);
-    try{
+    try {
         const address = await axios.get(`http://localhost:${process.env.PORT}/api/getAddress?userId=${userId}&addressId=${addressId}`)
         console.log(address.data);
         res.status(200).render('userViews/userEditAddress',
-        {
-            sInfo: req.session.sAddress,
-            addressInfo: address.data,
-            errMesg: {
-                fName: req.session.fName,
-                pincode: req.session.pincode,
-                locality: req.session.locality,
-                address: req.session.address,
-                district: req.session.district,
-                state: req.session.state,
-                exist: req.session.exist
+            {
+                sInfo: req.session.sAddress,
+                addressInfo: address.data,
+                errMesg: {
+                    fName: req.session.fName,
+                    pincode: req.session.pincode,
+                    locality: req.session.locality,
+                    address: req.session.address,
+                    district: req.session.district,
+                    state: req.session.state,
+                    exist: req.session.exist
+                },
             },
-        },
-        (err, html) => {
-            if (err) {
-                console.log("Render erorr at edit address", err);
-                return res.status(500).send("Internal server error");
-            }
-            delete req.session.fName;
-            delete req.session.pincode;
-            delete req.session.locality;
-            delete req.session.address;
-            delete req.session.district;
-            delete req.session.state;
-            delete req.session.exist;
-            delete req.session.sAddress;
+            (err, html) => {
+                if (err) {
+                    console.log("Render erorr at edit address", err);
+                    return res.status(500).send("Internal server error");
+                }
+                delete req.session.fName;
+                delete req.session.pincode;
+                delete req.session.locality;
+                delete req.session.address;
+                delete req.session.district;
+                delete req.session.state;
+                delete req.session.exist;
+                delete req.session.sAddress;
 
-            res.send(html);
-        }
+                res.send(html);
+            }
         )
 
-    }catch(err){
+    } catch (err) {
         console.log("Update query err:", err);
     }
 }
 
-exports.userCart=async(req,res)=>{
-    res.render('userViews/userCart')
+exports.userCart = async (req, res) => {
+    try {
+        const cartProducts = await userDbHelper.getCartItems(req.session.isUserAuth)
+        if (cartProducts.length > 0 && cartProducts[0].pDetail && cartProducts[0].pDetail[0]) {
+            res.status(200).render('userViews/userCart', { cartProducts: cartProducts });
+        } else {
+            // Handle the case when cartProducts is empty or doesn't have the expected structure
+            res.status(200).render('userViews/userCart', { cartProducts: [] });
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(500).send("Internal server error usercart")
+    }
+}
+
+exports.userCheckout = async (req, res) => {
+    try {
+        const cartProducts = await userDbHelper.getCartItems(req.session.isUserAuth)
+        if (cartProducts.length > 0 && cartProducts[0].pDetail && cartProducts[0].pDetail[0]) {
+            res.status(200).render('userViews/userCheckout', { cartProducts: cartProducts });
+        } else {
+            // Handle the case when cartProducts is empty or doesn't have the expected structure
+            res.status(200).render('userViews/userCheckout', { cartProducts: [] });
+        }
+    } catch (err) {
+        res.status(500).send("Internal server error usercheckout")
+    }
 }

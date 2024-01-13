@@ -15,6 +15,10 @@ body {
 .navbar-scroll {
     background-color: #ffffff;
 }
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
 
 /* Color of the links AFTER scroll */
 .navbar-scrolled .nav-link,
@@ -142,6 +146,13 @@ body {
     margin-top: 12px
 }
 
+.ftbtn:hover{
+    background-color: rgb(189, 227, 2);
+}
+
+a{
+    text-decoration: none;
+}
 
 /* media queries */
 @media (max-width: 992px) {

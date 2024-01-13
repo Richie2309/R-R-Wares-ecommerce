@@ -67,6 +67,16 @@ route.get('/deleteAddress', userAuthMiddleware.isUserAuth2, userController.delet
 
 route.get('/usersAddToCart',userAuthMiddleware.isUserAuth2,userController.usersAddToCart)
 
+route.get('/userCart',userAuthMiddleware.isUserAuth2, userRender.userCart)
+
+route.get('/userDeleteCart',userAuthMiddleware.isUserAuth2, userController.userDeleteCart)
+
+route.get('/updateQuantity',userAuthMiddleware.isUserAuth2, userController.updateQuantity)
+
+route.get('/userCheckOut', userAuthMiddleware.isUserAuth2, userRender.userCheckout)
+// route.post('/userCheckOut', userController.userCheckout)
+
+
 // //api
 route.get('/api/productByCategory', userController.productByCategory);
 

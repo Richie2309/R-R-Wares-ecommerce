@@ -388,8 +388,12 @@ exports.productByCategory = async (req, res) => {
   const category = req.query.name
   console.log(category);
   try {
+    if (!category) {
+      res.redirect('/')
+    }
 
     const result = await Productdb.find({ category: category, listed: true });
+
     res.send(result);
   } catch (err) {
     console.log("Error:", err);
@@ -764,9 +768,10 @@ exports.usersAddToCart = async (req, res) => {
 
 
   } catch (err) {
-    res.status(500).send("Internal server error")
+    res.status(500).send("Internal server error addtocart")
   }
 }
+
 exports.getCartItems = async (req, res) => {
   const userId = req.query.userId;
   const productId = req.query.productId
@@ -784,6 +789,40 @@ exports.getCartItems = async (req, res) => {
     }
   } catch (err) {
     console.log("err");
-    res.status(500).send("Interal server error")
+    res.status(500).send("Interal server error getcart")
   }
 }
+
+exports.updateQuantity = async (req, res) => {
+  try {
+    const totalQuantity = req.query.qid
+    const productId = req.query.productId
+    await Cartdb.updateOne({ userId: req.session.isUserAuth, "products.productId": productId }, { $set: { "products.$.units": totalQuantity } })
+    // res.redirect('/userCart')
+    res.status(200).json({
+      status: true
+    })
+  } catch (err) {
+    res.status(500).send("Internal server error update")
+  }
+}
+
+exports.userDeleteCart = async (req, res) => {
+  try {
+    await Cartdb.updateOne(
+      { userId: req.session.isUserAuth },
+      { $pull: { products: { productId: req.query.productId } } }
+    )
+    res.status(200).redirect('/userCart')
+  } catch (err) {
+
+  }
+}
+
+// exports.userCheckOut = async (req, res) => {
+//   try {
+   
+//   } catch (err) {
+
+//   }
+// }

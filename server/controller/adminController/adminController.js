@@ -306,7 +306,7 @@ exports.adminUpdateProduct = async (req, res) => {
     if (files.length == 0)
       return res.redirect('/adminProductManage')
     else {
-      await Productdb.updateOne({ _id: req.params.id }, { $set: { images: uploadImg } })
+      await Productdb.updateOne({ _id: req.params.id }, { $push: { images: uploadImg } })
       res.redirect("/adminProductManage");
     }
 

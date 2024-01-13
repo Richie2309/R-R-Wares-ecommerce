@@ -11,7 +11,7 @@ const productSchema = new mongodb.Schema({
     },
     category: {
         type: String,
-        required: true//objid
+        required: true//objid 
     },
     pDescription: {
         type: String,
