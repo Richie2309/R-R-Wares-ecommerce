@@ -10,7 +10,8 @@ const Cartdb = require('../../model/userModel/cartModel')
 const Productdb = require('../../model/adminModel/productModel');
 const { query } = require('express');
 const userAddressdb = require('../../model/userModel/addressModel')
-// const dotenv = config({ path: 'congif.env' })
+const Orderdb = require('../../model/userModel/orderModel')
+const userDbHelpers = require("../../dbHelpers/userDbHelpers");
 
 function capitalizeFirstLetter(str) {
   str = str.toLowerCase();
@@ -384,32 +385,6 @@ exports.userLogout = async (req, res) => {
   res.status(200).redirect("/");
 }
 
-exports.productByCategory = async (req, res) => {
-  const category = req.query.name
-  console.log(category);
-  try {
-    if (!category) {
-      res.redirect('/')
-    }
-
-    const result = await Productdb.find({ category: category, listed: true });
-
-    res.send(result);
-  } catch (err) {
-    console.log("Error:", err);
-    res.status(500).render("errorPages");
-  }
-}
-
-exports.userProductDetail = async (req, res) => {
-  const productId = req.query.productId
-  try {
-    const result = await Productdb.find({ _id: productId })
-    res.send(result)
-  } catch (err) {
-    console.log(err);
-  }
-}
 
 //----PROFILE----//
 exports.userInfo = async (req, res) => {
@@ -490,339 +465,52 @@ exports.userEditProfile = async (req, res) => {
 }
 
 
-//----ADDRESS----//
-exports.addressInfo = async (req, res) => {
-  const userId = req.query.userId;
-  const addressId = req.query.addressId;
+exports.userCheckout = async (req, res) => {
+  console.log(req.session.isUserAuth);
   try {
-    if (!addressId) {
-      const address = await userAddressdb.findOne({
-        "userId": userId
-      }).populate('defaultAddress');
-      res.send(address);
-    }
-    else {
-      const address = await userAddressdb.findOne({
-        "userId": userId
-      })
-      const oneAdd = address.address.find(element => {
-        return String(element._id) === addressId
-      })
-      console.log(oneAdd);
-      res.send(oneAdd);
-    }
+    // Get the cart items using the helper function
+    const cartProducts = await userDbHelpers.getCartItems(req.session.isUserAuth);
 
-  } catch (err) {
-    console.log(err);
-    res.status(500).send("internal server error");
-  }
-}
-
-exports.changeAddress = async (req, res) => {
-  try {
-    await userAddressdb.updateOne(
-      { userId: req.session.isUserAuth },
-      { $set: { defaultAddress: req.query.id } }
-    );
-    res.status(200).redirect("/userAddress");
-  } catch (err) {
-    res.status(500).send("Internal server error");
-  }
-}
-
-exports.userAddAddress = async (req, res) => {
-  try {
-    if (!req.body.fName) {
-      req.session.fName = `This Field is required`;
-    }
-
-    if (!req.body.pincode) {
-      req.session.pincode = `This Field is required`;
-    }
-
-    if (!req.body.locality) {
-      req.session.locality = `This Field is required`;
-    }
-
-    if (!req.body.address) {
-      req.session.address = `This Field is required`;
-    }
-
-    if (!req.body.district) {
-      req.session.district = `This Field is required`;
-    }
-
-    if (!req.body.state) {
-      req.session.state = `This Field is required`;
-    }
-
-    if (
-      req.session.fName ||
-      req.session.pincode ||
-      req.session.locality ||
-      req.session.address ||
-      req.session.district ||
-      req.session.state
-    ) {
-      req.session.sAddress = req.body;
-      return res.status(401).redirect("/userAddAddress");
-    }
-
-    req.body.fullName = capitalizeFirstLetter(req.body.fName);
-    req.body.locality = capitalizeFirstLetter(req.body.locality);
-    req.body.district = capitalizeFirstLetter(req.body.district);
-    req.body.state = capitalizeFirstLetter(req.body.state);
-
-    const isAddress = await userAddressdb.findOne({
-      userId: req.session.isUserAuth,
-      "address.fName": req.body.fName,
-      "address.pincode": req.body.pincode,
-      "address.locality": req.body.locality,
-      "address.address": req.body.address,
-      "address.district": req.body.district,
-      "address.state": req.body.state,
-    });
-
-    if (isAddress) {
-      req.session.exist = `This address already exist`;
-      return res.status(401).redirect("/userAddAddress");
-    }
-    console.log('req.body:', req.body);
-    console.log('req.query.addressId:', req.query.addressId);
-
-    const structuredAddress = `${req.body.fName}, ${req.body.address}, ${req.body.locality}, ${req.body.district}, ${req.body.state} - ${req.body.pincode}`;
-
-    await userAddressdb.updateOne(
-      { userId: req.session.isUserAuth },
-      {
-        $push: {
-          address: {
-            fullName: req.body.fName,
-            pincode: req.body.pincode,
-            locality: req.body.locality,
-            address: req.body.address,
-            district: req.body.district,
-            state: req.body.state,
-            structuredAddress,
-          },
-        },
-      },
-      { upsert: true }
-    );
-
-    const addres = await userAddressdb.findOne({
-      userId: req.session.isUserAuth,
-    });
-
-    if (!addres.defaultAddress || addres.address.length === 1) {
-      await userAddressdb.updateOne(
-        { userId: req.session.isUserAuth },
-        { $set: { defaultAddress: addres.address[0]._id } }
-      );
-    }
-
-    res.status(200).redirect("/userProfile");
-  } catch (err) {
-    console.log(err);
-  }
-}
-
-exports.userEditAddress = async (req, res) => {
-  const addressId = req.query.addressId;
-  const userId = req.session.isUserAuth
-  try {
-    req.body.fName = req.body.fName.trim()
-    req.body.locality = req.body.locality.trim()
-    req.body.address = req.body.address.trim()
-    req.body.state = req.body.state.trim()
-    req.body.district = req.body.district.trim()
-
-    if (!req.body.fName) {
-      req.session.fName = `This Field is required`;
-    }
-
-    if (!req.body.pincode) {
-      req.session.pincode = `This Field is required`;
-    }
-
-    if (!req.body.locality) {
-      req.session.locality = `This Field is required`;
-    }
-
-    if (!req.body.address) {
-      req.session.address = `This Field is required`;
-    }
-
-    if (!req.body.district) {
-      req.session.district = `This Field is required`;
-    }
-
-    if (!req.body.state) {
-      req.session.state = `This Field is required`;
-    }
-
-    if (
-      req.session.fName ||
-      req.session.pincode ||
-      req.session.locality ||
-      req.session.address ||
-      req.session.district ||
-      req.session.state
-    ) {
-      req.session.sAddress = req.body;
-      return res.status(401).redirect("/userEditAddress");
-    }
-
-    req.body.fName = capitalizeFirstLetter(req.body.fName);
-    req.body.locality = capitalizeFirstLetter(req.body.locality);
-    req.body.district = capitalizeFirstLetter(req.body.district);
-    req.body.state = capitalizeFirstLetter(req.body.state);
-
-    // Validate if the addressId is provided
-    if (!addressId) {
-      return res.status(400).send("Address ID is required");
-    }
-
-    // Check if the address exists
-    const existingAddress = await userAddressdb.findOne({
-      userId: userId,
-      "address._id": addressId,
-    });
-
-    if (!existingAddress) {
-      return res.status(404).send("Address not found");
-    }
-
-    // Update the existing address
-    await userAddressdb.updateOne(
-      {
-        userId: userId,
-        "address._id": addressId,
-      },
-      {
-        $set: {
-          "address.$.fullName": fName,
-          "address.$.pincode": req.body.pincode,
-          "address.$.locality": locality,
-          "address.$.address": req.body.address,
-          "address.$.district": district,
-          "address.$.state": state,
-          "address.$.structuredAddress": `${req.body.fName}, ${req.body.address}, ${req.body.locality}, ${req.body.district}, ${req.body.state} - ${req.body.pincode}`
-        },
+    // Create an order record in the Orderdb mode
+    const orderItems = cartProducts.map((element) => {
+      return {
+        productId: element.products.productId,
+        pName: element.pDetail[0].pName,
+        brand: element.pDetail[0].brand,
+        category: element.pDetail[0].category,
+        pDescription: element.pDetail[0].pDescription,
+        price: element.pDetail[0].price,
+        units: element.products.units,
+        images: element.pDetail[0].images[0],
       }
-    );
+    })
+    orderItems.forEach(async (element) => {
+      const d = await Productdb.updateOne(
+        {_id: element.productId },
+        { $inc: { units: -element.units } }
+     );
+    });
 
-    res.status(200).redirect("/userAddress");
+    const newOrder = new Orderdb({
+      userId: req.session.isUserAuth,
+      orderItems: orderItems,
+      paymentMethod:
+        req.body.paymentMethod === "cod" ? "cod" : "online"
+    });
+
+    if (req.body.paymentMethod === "cod") {
+      await newOrder.save();
+      await Cartdb.updateOne(
+        { userId: req.session.isUserAuth },
+        { $set: { products: [] } }
+      ); // empty cart items
+      req.session.orderSuccess = true;
+      return res.redirect("/orderSuccess");
+    }
+
+    return res.status(302).redirect('/orderSuccess');
   } catch (err) {
     console.error(err);
-    res.status(500).send("Internal Server Error");
+    res.status(500).send("Internal server error usercheckout");
   }
-}
-
-exports.deleteAddress = async (req, res) => {
-  try {
-    const address = await userAddressdb.findOneAndUpdate(
-      { userId: req.session.isUserAuth },
-      { $pull: { address: { _id: req.query.addressId } } }
-    );
-
-    if (
-      String(address.defaultAddress) === req.query.addressId &&
-      address.address.length > 1
-    ) {
-      const addres = await userAddressdb.findOne({
-        userId: req.session.isUserAuth,
-      });
-
-      await userAddressdb.updateOne(
-        { userId: req.session.isUserAuth },
-        { $set: { defaultAddress: addres.address[0]._id } }
-      );
-    }
-    res.status(200).redirect("/userAddress");
-  } catch (err) {
-    console.log("err");
-    res.status(500).send(err);
-  }
-}
-
-//----CART----//
-exports.usersAddToCart = async (req, res) => {
-  const userId = req.session.isUserAuth
-  const productId = req.query.productId
-  try {
-    //checking if the product already exist in cart
-    const isItem = await Cartdb.findOne({ userId: userId, 'products.productId': productId })
-    if (isItem) {
-      return res.status(200).redirect(`/userProductDetail/${productId}`)
-    }
-
-    // insert new doc if not exist
-    await Cartdb.updateOne(
-      { userId: userId },
-      { $push: { products: { productId: productId } } },
-      { upsert: true }
-    )
-
-    return res.status(200).redirect(`/userProductDetail?productId=${productId}`);
-
-
-  } catch (err) {
-    res.status(500).send("Internal server error addtocart")
-  }
-}
-
-exports.getCartItems = async (req, res) => {
-  const userId = req.query.userId;
-  const productId = req.query.productId
-  try {
-    // if user not login show add to cart button for that send false
-    if (userId === "undefined") {
-      return res.send(false);
-    }
-    const isItem = await Cartdb.findOne({ userId: userId, 'products.productId': productId });
-    //if product is there send true to show go cart button or false to show add to cart button
-    if (isItem) {
-      res.send(true);
-    } else {
-      res.send(false);
-    }
-  } catch (err) {
-    console.log("err");
-    res.status(500).send("Interal server error getcart")
-  }
-}
-
-exports.updateQuantity = async (req, res) => {
-  try {
-    const totalQuantity = req.query.qid
-    const productId = req.query.productId
-    await Cartdb.updateOne({ userId: req.session.isUserAuth, "products.productId": productId }, { $set: { "products.$.units": totalQuantity } })
-    // res.redirect('/userCart')
-    res.status(200).json({
-      status: true
-    })
-  } catch (err) {
-    res.status(500).send("Internal server error update")
-  }
-}
-
-exports.userDeleteCart = async (req, res) => {
-  try {
-    await Cartdb.updateOne(
-      { userId: req.session.isUserAuth },
-      { $pull: { products: { productId: req.query.productId } } }
-    )
-    res.status(200).redirect('/userCart')
-  } catch (err) {
-
-  }
-}
-
-// exports.userCheckOut = async (req, res) => {
-//   try {
-   
-//   } catch (err) {
-
-//   }
-// }
+};

@@ -125,20 +125,21 @@
               <div class="d-flex flex-column align-items-center mt-4">
                 <div class="buttons d-flex flex-row mt-5 gap-3">
 
-                  <% if(isCartItem) {%>
-                    <a href="/userCart">
-                      <button class="btn btn-warning text-center"><i class="fa-solid fa-bag-shopping px-2"
-                          style="color: #ffffff;"></i>Go to Cart</button>
-                    </a>
-                    <% } else{%>
-                      
-                        <a href="/usersAddToCart?productId=<%= product._id %>">
+                  <% if( product.units==0) {%>
+                    <p class="text-danger fs-4">Item Out of stock</p>
+                    <% }else if(isCartItem) {%>
+                        <a href="/userCart">
                           <button class="btn btn-warning text-center"><i class="fa-solid fa-bag-shopping px-2"
-                              style="color: #ffffff;"></i>Add to Cart</button>
+                              style="color: #ffffff;"></i>Go to Cart</button>
                         </a>
-                      
-                          <% } %>
+                        <% } else{%>
 
+                          <a href="/usersAddToCart?productId=<%= product._id %>">
+                            <button class="btn btn-warning text-center"><i class="fa-solid fa-bag-shopping px-2"
+                                style="color: #ffffff;"></i>Add to Cart</button>
+                          </a>
+
+                          <% } %>
                 </div>
               </div>
             </div>

@@ -15,7 +15,7 @@ const cartSchema = new mongodb.Schema({
         ref:'Productdb'
       },
       units: {
-        type: Number,
+        type: Number, 
         default: 1
       }
     },

@@ -57,7 +57,7 @@
                         </li>
                         <li class="nav-item p-1">
                             <div class="round bg-light">
-                                <a class="nav-link" href="userSigninEmail">
+                                <a class="nav-link" href="/userProfile">
                                     <i class="fa-solid fa-user text-black"></i>
                                 </a>
                             </div>
@@ -87,18 +87,18 @@
         <div class="container py-5 h-100">
             <div class="row d-flex justify-content-center align-items-center h-100">
                 <div class="col-12">
-                    <div class="card card-registration card-registration-2">
+                    <div class="card card-registration card-registration-2 border-5 border-warning rounded-4">
                         <div class="card-body p-0">
                             <div class="row g-0">
                                 <div class="col-lg-8">
                                     <div class="p-5">
                                         <div class="d-flex justify-content-between align-items-center mb-5">
-                                            <h1 class="fw-bold mb-0 text-black">Shopping Cart</h1>
+                                            <h1 class="fw-bold mb-0 text-black">Your Cart</h1>
                                             <h6 class="mb-0 text-muted">
                                                 <%= cartProducts ? cartProducts.length : 0 %> Items
                                             </h6>
                                         </div>
-                                        <hr class="my-4">
+                                        <hr class="my-4 border-5 text-dark">
                                         <% if (cartProducts && cartProducts.length> 0) { %>
                                             <% cartProducts.forEach((product,index)=> { %>
                                                 <div class="row mb-4 d-flex justify-content-between align-items-center">
@@ -125,7 +125,7 @@
                                                         <input id="form<%= index%>" min="1"
                                                             max="<%= product.pDetail[0].units %>" name="quantity"
                                                             value="<%= product.products.units %>" type="number"
-                                                            class="form-control form-control-sm" />
+                                                            class="form-control form-control-sm" readonly/>
 
                                                         <button class="btn btn-link px-2"
                                                             onclick="incrementQuantity('<%= index %>','<%= product.pDetail[0]._id %>')">
@@ -137,46 +137,45 @@
                                                             <%=product.products.units*product.pDetail[0].price %>
                                                         </h6>
                                                     </div>
-
-
-
-
-
-                                                    <%#= userCart.reduce((total, item)=> {
-                                                        return total + (item.productDetails[0].firstprice *
-                                                        item.cartItems.quantity);
-                                                        }, 0) %>
-
-
-                                                        <div class="col-md-1 col-lg-1 col-xl-1 text-end">
-                                                            <a href="/userDeleteCart?productId=<%= product.pDetail[0]._id  %>"
-                                                                class="text-muted"><i class="fas fa-times"></i></a>
-                                                        </div>
+                                                    <div class="col-md-1 col-lg-1 col-xl-1 text-end">
+                                                        <a href="/userDeleteCart?productId=<%= product.pDetail[0]._id  %>"
+                                                            class="text-muted"><i class="fas fa-times"></i></a>
+                                                    </div>
                                                 </div>
+                                                <hr class="my-4 border-5 text-dark">
+
                                                 <% }); %>
                                                     <% } else { %>
                                                         <h1>Your cart is empty</h1>
                                                         <% } %>
-                                                            <hr class="my-4">
+
                                     </div>
                                 </div>
                                 <% if (cartProducts && cartProducts.length> 0) { %>
-                                    <div class="col-lg-4 bg-dark text-light rounded-3">
-                                        <div class="p-5">
+                                    <div class="col-lg-4 bg-light text-dark rounded-4">
+                                        <div class="p-5 rounded-4">
                                             <h3 class="fw-bold mb-5 mt-2 pt-1">Summary</h3>
-                                            <hr class="my-4">
-                                            <h5 class="text-uppercase mb-3">Give code</h5>
-
-                                            <div class="mb-5">
+                                            <hr class="border-5 text-dark">
+                                            <h5 class="text-uppercase mb-3 text-success">Give code</h5>
+                                            <form class="card p-2">
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control border-success"
+                                                        placeholder="Promo code">
+                                                    <div class="input-group-append">
+                                                        <button type="submit" class="btn btn-success">Redeem</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                            <!-- <div class="mb-5">
                                                 <div class="form-outline">
                                                     <input type="text" id="form3Examplea2"
-                                                        class="form-control form-control-lg" />
-                                                    <label class="form-label" for="form3Examplea2">Enter your
+                                                        class="form-control form-control-lg border border-1 border-success" />
+                                                    <label class="form-label text-success" for="form3Examplea2">Enter your
                                                         code</label>
                                                 </div>
-                                            </div>
+                                            </div> -->
 
-                                            <hr class="my-4">
+                                            <hr class="my-4 b border-5 text-dark">
 
                                             <div class="d-flex justify-content-between mb-4">
                                                 <h5 class="text-uppercase">items(<%= cartProducts ? cartProducts.length
@@ -203,7 +202,7 @@
 
                                             <a href="/userCheckout">
                                                 <button type="submit"
-                                                    class="btn btn-warning text-light btn-block btn-lg">Proceed to
+                                                    class="btn btn-success text-light btn-block btn-lg">Proceed to
                                                     Buy</button>
                                             </a><br><br>
                                             <div class="d-flex justify-content-center  align-items-center text-center">
@@ -216,7 +215,6 @@
                                                     </p>
                                                 </div>
                                             </div>
-
                                         </div>
                                     </div>
                                     <% } %>

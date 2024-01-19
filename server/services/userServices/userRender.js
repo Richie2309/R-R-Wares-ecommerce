@@ -4,7 +4,6 @@ const userDbHelper = require('../../dbHelpers/userDbHelpers')
 
 exports.homepage = async (req, res) => {
     const category = await axios.post(`http://localhost:${process.env.PORT}/api/getCategory/1`);
-    console.log(category);
 
     res.render('userViews/homepage', { isLoggedIn: req.session.isUserAuth, category: category.data });
 }
@@ -15,7 +14,6 @@ exports.singleProductCategory = async (req, res) => {
         const product = await axios.get(`http://localhost:${process.env.PORT}/api/productByCategory?name=${name}`)
         const category = await axios.post(`http://localhost:${process.env.PORT}/api/getCategory/1`);
         res.render('userViews/singleProductCategory', { isLoggedIn: req.session.isUserAuth, product: product.data, category: category.data, selectedCategory: name });
-        console.log(product.data);
     }
     catch (err) {
         console.log(err);
@@ -178,6 +176,10 @@ exports.userAddress = async (req, res) => {
 }
 
 exports.userAddAddress = async (req, res) => {
+    const { returnTo } = req.query
+    console.log(returnTo);
+    if (returnTo)
+        req.session.returnTo = returnTo
     try {
         res.status(200).render('userViews/userAddAddress',
             {
@@ -213,6 +215,10 @@ exports.userAddAddress = async (req, res) => {
 }
 
 exports.userEditAddress = async (req, res) => {
+    const { returnTo } = req.query
+    console.log(returnTo);
+    if (returnTo)
+        req.session.returnTo = returnTo
     const userId = req.session.isUserAuth
     const addressId = req.query.addressId
     console.log(addressId);
@@ -272,15 +278,44 @@ exports.userCart = async (req, res) => {
 }
 
 exports.userCheckout = async (req, res) => {
+    const userId = req.session.isUserAuth
     try {
+        const user = await axios.get(`http://localhost:${process.env.PORT}/api/getAddress?userId=${userId}`)
         const cartProducts = await userDbHelper.getCartItems(req.session.isUserAuth)
         if (cartProducts.length > 0 && cartProducts[0].pDetail && cartProducts[0].pDetail[0]) {
-            res.status(200).render('userViews/userCheckout', { cartProducts: cartProducts });
+            res.status(200).render('userViews/userCheckout', { cartProducts: cartProducts, userInfo: user.data });
         } else {
             // Handle the case when cartProducts is empty or doesn't have the expected structure
             res.status(200).render('userViews/userCheckout', { cartProducts: [] });
         }
     } catch (err) {
         res.status(500).send("Internal server error usercheckout")
+    }
+}
+
+
+exports.orderSuccess = async (req, res) => {
+    try {
+        res.render('userViews/orderSuccess')
+    } catch (err) {
+
+    }
+}
+
+exports.userOrderHistory = async (req, res) => {
+    try {
+        const orderItems = await userDbHelper.getOrders(req.session.isUserAuth);
+        console.log(orderItems);
+        res.status(200).render('userViews/userOrderHistory', { orders: orderItems, isCancelled: req.session.isCancelled }, (err, html) => {
+            if(err) {
+                res.send('Internal server err', err);
+            }
+
+            delete req.session.isCancelled;
+
+            res.send(html);
+        })
+    } catch (err) {
+        console.log(err);
     }
 }

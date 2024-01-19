@@ -1,6 +1,8 @@
 const axios = require('axios');
 const { response } = require('express');
 const Productdb = require('../../model/adminModel/productModel');
+const { ExpressValidator } = require('express-validator');
+const adminHelper = require('../../dbHelpers/adminDbHelpers')
 
 // exports.adminSignin=(req,res)=>{
 //     res.render('adminViews/adminSignin')
@@ -192,7 +194,7 @@ exports.adminUpdateCategory = async (req, res) => {
     const category = await axios.get(`http://localhost:${process.env.PORT}/api/getSingleCategory?id=${req.query.id}`)
     res.status(200).render('adminViews/adminUpdateCategory',
       { category: category.data, errMesg: req.session.category })
-      // console.log(category);
+    // console.log(category);
   } catch (err) {
     // console.log("err", err.message);
     res.send("Internal server err");
@@ -216,5 +218,16 @@ exports.adminUserManage = async (req, res) => {
   res.status(200).render('adminViews/adminUserManage', { users: users.data });
 }
 
-
-
+//Order Manage
+exports.adminOrderManage = async (req, res) => {
+  try {
+    const orders = await adminHelper.getAllOrders(req.query.filter);
+    console.log('req.query.filter', req.query.filter);
+    console.log('orders', orders.userInfo);
+    res.status(200).render('adminViews/adminOrderManage', { orders, filter: req.query.filter })
+  }
+  catch (err) {
+    console.log("err", err);
+    res.send("Internal server err");
+  }
+}
