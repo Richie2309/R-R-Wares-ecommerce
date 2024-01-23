@@ -65,8 +65,17 @@
                         </li>
                         <li class="nav-item p-1">
                             <div class="round bg-light">
-                                <a class="nav-link" href="#!">
-                                    <i class="fa-solid fa-cart-shopping text-black"></i>
+                                <a class="nav-link" href="/userCart">
+                                    <div class="position-relative contain">
+                                        <i class="fa-solid fa-cart-shopping text-black"></i>
+                                        <% if (cartProducts.length) { %>
+                                            <span class="position-absolute badgeCustom">
+                                                <p class="count text-black">
+                                                    <%= cartProducts.length %>
+                                                </p>
+                                            </span>
+                                            <% } %>
+                                    </div>
                                 </a>
                             </div>
                         </li>
@@ -89,7 +98,7 @@
             <div class="row d-flex justify-content-center align-items-center h-100">
                 <div class="">
                     <div class="card card-registration card-registration-2 border-5 border-warning rounded-4">
-                        <div class="card-body p-0">
+                        <div class="card-body p-0 mb-4">
                             <div class="row g-0">
                                 <div class="col-md-12">
                                     <div class="p-5">
@@ -112,8 +121,12 @@
                                                         <%= orders[i].orderItems.pName %>
                                                     </h6>
                                                 </div>
-                                                <div id="prId" style="display: none;"><%= orders[i].orderItems.productId %></div>
-                                                <div id="orderId" style="display: none;"><%= orders[i]._id %></div>
+                                                <div id="prId" style="display: none;">
+                                                    <%= orders[i].orderItems.productId %>
+                                                </div>
+                                                <div id="orderId" style="display: none;">
+                                                    <%= orders[i]._id %>
+                                                </div>
                                                 <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
 
                                                     <p>Qty: <%= orders[i].orderItems.units %>
@@ -128,14 +141,19 @@
                                                 <div class="col-md-1 col-lg-1 col-xl-1 text-end">
                                                     <% if (orders[i].orderItems.orderStatus=="Cancelled" ) { %>
                                                         <h6 class="text-danger">Cancelled</h6>
+                                                    <% } else if (orders[i].orderItems.orderStatus=="Shipped" ) { %>
+                                                        <h6 class="text-warning">Shipped</h6>
                                                         <% } else if(orders[i].orderItems.orderStatus=="Delivered" ) {%>
                                                             <h6 class="text-success">Delivered</h6>
                                                             <a href="" class="btn text-light bg-warning">Return</a>
                                                             <% } else{%>
                                                                 <h6 class="p-2">Ordered</h6>
-                                                                <button type="button" class="btn btn-outline-danger cancel-btn">
-                                                                Cancel
-                                                            </button>
+                                                                <button
+                                                                    onclick="cancelOrder('<%= orders[i].orderItems.productId %>','<%= orders[i]._id %>')"
+                                                                    type="button"
+                                                                    class="btn btn-outline-danger cancel-btn">
+                                                                    Cancel
+                                                                </button>
                                                                 <% } %>
 
                                                 </div>
@@ -145,7 +163,8 @@
                                                 <% if (orders.length===0) { %>
                                                     <div class="errNoProduct position-absolute">
                                                         <h1>You didn't order anything!</h1>
-                                                        <h4><a href="/" class="btn btn-warning">Order Now</a></h4>
+                                                        <h4 class="my-6"><a href="/" class="btn btn-warning">Order
+                                                                Now</a></h4>
                                                     </div>
                                                     <% } %>
 
@@ -161,149 +180,38 @@
     </section>
 
 
-    <!-- Footer -->
-    <footer class="text-center text-lg-start text-dark" style="background-color: #000000;">
-        <!-- Grid container -->
-        <div class="container p-4 pb-0">
-            <!-- Section: Links -->
-            <section class="">
-                <!--Grid row-->
-                <div class="footer row">
+    <%-include('include/footer')-%>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            function cancelOrder(prId, orderId) {
 
-
-                    <hr class="w-100 clearfix d-md-none" />
-
-                    <!-- Grid column -->
-                    <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mt-3">
-                        <h6 class="text-uppercase mb-4 font-weight-bold text-light">About</h6>
-                        <p>
-                            <a class="text-light  text-decoration-none" href="">Contact Us</a>
-                        </p>
-                        <p>
-                            <a class="text-light  text-decoration-none" href="">About Us</a>
-                        </p>
-                        <p>
-                            <a class="text-light text-decoration-none" href="">Return & Refunds</a>
-                        </p>
-                        <p>
-                            <a class="text-light text-decoration-none" href="">FAQ'S</a>
-                        </p>
-                    </div>
-                    <!-- Grid column -->
-
-                    <hr class="w-100 clearfix d-md-none" />
-
-                    <!-- Grid column -->
-                    <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mt-3">
-                        <h6 class="text-uppercase mb-4 font-weight-bold text-light">
-                            More info
-                        </h6>
-                        <p>
-                            <a class="text-light text-decoration-none" href="">Terms and Conditions</a>
-                        </p>
-                        <p>
-                            <a class="text-light text-decoration-none" href="">Privacy Policy</a>
-                        </p>
-                        <p>
-                            <a class="text-light text-decoration-none" href="">Shipping Policy</a>
-                        </p>
-                    </div>
-
-                    <!-- Grid column -->
-                    <hr class="w-100 clearfix d-md-none" />
-
-                    <!-- Grid column -->
-                    <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mt-3 text-light">
-                        <h6 class="text-uppercase mb-4 font-weight-bold text-light">Location</h6>
-                        <p>support@r&rwares.com</p>
-                        <p> 222 Avenue Tokyo, 727487, Japan </p>
-                        <p>Telephone: 044-456147000</p>
-                    </div>
-                    <!-- Grid column -->
-                </div>
-                <!--Grid row-->
-            </section>
-            <!-- Section: Links -->
-
-            <hr class="my-3">
-
-            <!-- Section: Copyright -->
-
-            <div class="row">
-                <!-- Grid column -->
-                <div class="col-md-12 text-center text-md-center">
-                    <!-- Copyright -->
-                    <div class="p-3 ">
-                        <p class="text-light">Copyright © 2023 R@R Wares Pvt Ltd. All rights reserved.</p>
-                    </div>
-                    <!-- Copyright -->
-                </div>
-                <!-- Grid column -->
-
-                <!-- Grid column -->
-                <div class="col-md-12 text-center">
-                    <!-- Facebook -->
-                    <a class="btn btn-outline-light btn-floating m-1" class="text-light" role="button"><i
-                            class="fab fa-facebook-f"></i></a>
-
-                    <!-- Twitter -->
-                    <a class="btn btn-outline-light btn-floating m-1" class="text-light" role="button"><i
-                            class="fab fa-twitter"></i></a>
-
-                    <!-- Instagram -->
-                    <a class="btn btn-outline-light btn-floating m-1" class="text-light" role="button"><i
-                            class="fab fa-instagram"></i></a>
-                </div>
-                <!-- Grid column -->
-            </div>
-            <!-- Section: Copyright -->
-        </div>
-        <!-- Grid container -->
-    </footer>
-    <!-- Footer -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const cancelButtons = document.querySelectorAll('.cancel-btn');
-    
-            cancelButtons.forEach(button => {
-                button.addEventListener('click', function () {
-                    // const orderId = button.getAttribute('data-order-id');
-                    const productId= document.getElementById('prId').innerHTML
-                    const orderId= document.getElementById('orderId').innerHTML
-                    console.log(productId);
-
-    
-                    Swal.fire({
-                        title: 'Are you sure?',
-                        text: "You won't be able to revert this!",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Yes, cancel it!'
-                    })
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, cancel it!'
+                })
                     .then((result) => {
                         if (result.isConfirmed) {
-
-                            window.location.href = `/userCancelOrder?orderId=${orderId}&productId=${productId}`
+                            window.location.href = `/userCancelOrder?orderId=${orderId}&productId=${prId}`
                         }
+
                     });
-                });
-            });
-        });
+            }
+            const isCancelled = '<%= isCancelled %>';
 
-        const isCancelled = '<%= isCancelled %>';
+            if (Boolean(isCancelled)) {
+                Swal.fire(
+                    'Cancelled!',
+                    'Your order has been canceled.',
+                    'success'
+                )
+            }
+        </script>
 
-        if(Boolean(isCancelled)){
-            Swal.fire(
-                'Cancelled!',
-                'Your order has been canceled.',
-                'success'
-            )
-        }
-    </script>
-    
 </body>
 
 </html>

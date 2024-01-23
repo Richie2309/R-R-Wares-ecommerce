@@ -18,6 +18,12 @@ function capitalizeFirstLetter(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
+function isStrongPassword(password) {
+  const passwordRegex = /^(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[a-z\d@$!%*?&]{8,}$/;
+  return passwordRegex.test(password);
+}
+
+
 const deleteOtpFromdb = async (_id) => {
   await Otpdb.deleteOne({ _id });
 };
@@ -195,16 +201,19 @@ exports.userSignup = async (req, res) => {
   else {
     userInfo.fName = req.body.fullName;
   }
+
   if (!password) {
     req.session.pass = `This Field is required`;
+  } else if (!isStrongPassword(password)) {
+    req.session.pass = `Password should be at least 8 characters long and include lowercase, numbers, and special characters.`;
   }
+
   if (!reenterpassword) {
     req.session.conPass = `This Field is required`;
   }
   if (req.body.password != req.body.reenterpassword) {
     req.session.bothPass = `Both Passwords doesn't match`;
   }
-
   if (req.session.fName || req.session.pass || req.session.conPass || req.session.bothPass) {
     req.session.userSignup = userInfo;
     return res.status(401).redirect('/userSignup');
@@ -346,7 +355,11 @@ exports.userResetPassword = async (req, res) => {
     if (!newPass) {
       req.session.pass = `This Field is required`;
       return res.redirect('/userResetPassword')
+    } else if (!isStrongPassword(newPass)) {
+      req.session.pass = `Password should be at least 8 characters long and include lowercase, numbers, and special characters.`;
+      return res.redirect('/userResetPassword')
     }
+
     if (!reenterNewPass) {
       req.session.conPass = `This Field is required`;
       return res.redirect('/userResetPassword')
@@ -406,11 +419,11 @@ exports.userEditProfile = async (req, res) => {
       if (!req.body.oldPass) {
         req.session.oldPass = `This Field is required`;
       }
-
       if (!req.body.newPass) {
         req.session.newPass = `This Field is required`;
+      } else if (!isStrongPassword(req.body.newPass)) {
+        req.session.newPass = `Password should be at least 8 characters long and include lowercase, numbers, and special characters.`;
       }
-
       if (!req.body.conNewPass) {
         req.session.conNewPass = `This Field is required`;
       }
@@ -486,9 +499,9 @@ exports.userCheckout = async (req, res) => {
     })
     orderItems.forEach(async (element) => {
       const d = await Productdb.updateOne(
-        {_id: element.productId },
+        { _id: element.productId },
         { $inc: { units: -element.units } }
-     );
+      );
     });
 
     const newOrder = new Orderdb({
@@ -504,7 +517,7 @@ exports.userCheckout = async (req, res) => {
         { userId: req.session.isUserAuth },
         { $set: { products: [] } }
       ); // empty cart items
-      req.session.orderSuccess = true;
+      req.session.orderSucessPage = true;
       return res.redirect("/orderSuccess");
     }
 

@@ -7,7 +7,7 @@ const userAuthMiddleware = require('../../../middlewares/userMiddleware/userAuth
 const addressController = require('../../controller/addressController')
 const cartController = require('../../controller/cartController')
 const productController = require('../../controller/productController')
-const orderController=require('../../controller/orderController')
+const orderController = require('../../controller/orderController')
 
 route.get('/', userAuthMiddleware.isUserBlocked, userRender.homepage)
 
@@ -77,15 +77,15 @@ route.get('/userDeleteCart', userAuthMiddleware.isUserAuth2, cartController.user
 
 route.get('/updateQuantity', userAuthMiddleware.isUserAuth2, cartController.updateQuantity)
 
-route.get('/userCheckOut', userAuthMiddleware.isUserAuth2, userRender.userCheckout)
+route.get('/userCheckOut', userAuthMiddleware.isUserAuth2, userAuthMiddleware.cartItemsTrue,userRender.userCheckout)
 
 route.post('/userCheckOut', userAuthMiddleware.isUserAuth2, userController.userCheckout)
 
-route.get('/orderSuccess', userAuthMiddleware.isUserAuth2, userRender.orderSuccess)
+route.get('/orderSuccess', userAuthMiddleware.isUserAuth2, userAuthMiddleware.isAuthOrder, userRender.orderSuccess)
 
 route.get('/userOrderHistory', userAuthMiddleware.isUserAuth2, userRender.userOrderHistory)
 
-route.get('/userCancelOrder',userAuthMiddleware.isUserAuth2, orderController.userCancelOrder)
+route.get('/userCancelOrder', userAuthMiddleware.isUserAuth2, orderController.userCancelOrder)
 
 // //api
 route.get('/api/productByCategory', productController.productByCategory);

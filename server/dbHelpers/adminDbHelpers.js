@@ -22,11 +22,11 @@ exports.getAllOrders = async (filter) => {
 
             },
 
-            // {
-            //     $sort: {
-            //         orderDate: -1,
-            //     },
-            // }
+            {
+                $sort: {
+                    orderDate: -1,
+                },
+            }
         ];
         // if (filter) {
         //     agg.splice(1, 0, {

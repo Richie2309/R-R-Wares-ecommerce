@@ -65,9 +65,23 @@
                         </li>
                         <li class="nav-item p-1">
                             <div class="round bg-light">
-                                <a class="nav-link" href="#!">
-                                    <i class="fa-solid fa-cart-shopping text-black"></i>
+
+                                <a class="nav-link" href="/userCart">
+                                    <div class="position-relative contain">
+                                        <i class="fa-solid fa-cart-shopping text-black"></i>
+                                        <% if (cartProducts.length) { %>
+                                            <span class="position-absolute badgeCustom">
+                                                <p class="count text-black">
+                                                    <%= cartProducts.length %>
+                                                </p>
+                                            </span>
+                                        <% } %>
+                                    </div>
                                 </a>
+                                
+                                
+                                
+                                
                             </div>
                         </li>
                         <li class="nav-item p-1">
@@ -125,7 +139,7 @@
                                                         <input id="form<%= index%>" min="1"
                                                             max="<%= product.pDetail[0].units %>" name="quantity"
                                                             value="<%= product.products.units %>" type="number"
-                                                            class="form-control form-control-sm" readonly/>
+                                                            class="form-control form-control-sm" readonly />
 
                                                         <button class="btn btn-link px-2"
                                                             onclick="incrementQuantity('<%= index %>','<%= product.pDetail[0]._id %>')">
@@ -225,139 +239,39 @@
             </div>
         </div>
     </section>
-    <!-- Footer -->
-    <footer class="text-center text-lg-start text-dark" style="background-color: #000000;">
-        <!-- Grid container -->
-        <div class="container p-4 pb-0">
-            <!-- Section: Links -->
-            <section class="">
-                <!--Grid row-->
-                <div class="footer row">
+    <%-include('include/footer')-%>
 
+        <script>
+            function decrementQuantity(index, productId) {
+                var inputElement = document.getElementById('form' + index);
+                inputElement.stepDown();
+                handleInputChange(inputElement.value, productId);
+            }
 
-                    <hr class="w-100 clearfix d-md-none" />
+            function incrementQuantity(index, productId) {
+                var inputElement = document.getElementById('form' + index);
+                inputElement.stepUp();
+                handleInputChange(inputElement.value, productId);
+            }
 
-                    <!-- Grid column -->
-                    <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mt-3">
-                        <h6 class="text-uppercase mb-4 font-weight-bold text-light">About</h6>
-                        <p>
-                            <a class="text-light  text-decoration-none" href="">Contact Us</a>
-                        </p>
-                        <p>
-                            <a class="text-light  text-decoration-none" href="">About Us</a>
-                        </p>
-                        <p>
-                            <a class="text-light text-decoration-none" href="">Return & Refunds</a>
-                        </p>
-                        <p>
-                            <a class="text-light text-decoration-none" href="">FAQ'S</a>
-                        </p>
-                    </div>
-                    <!-- Grid column -->
-
-                    <hr class="w-100 clearfix d-md-none" />
-
-                    <!-- Grid column -->
-                    <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mt-3">
-                        <h6 class="text-uppercase mb-4 font-weight-bold text-light">
-                            More info
-                        </h6>
-                        <p>
-                            <a class="text-light text-decoration-none" href="">Terms and Conditions</a>
-                        </p>
-                        <p>
-                            <a class="text-light text-decoration-none" href="">Privacy Policy</a>
-                        </p>
-                        <p>
-                            <a class="text-light text-decoration-none" href="">Shipping Policy</a>
-                        </p>
-                    </div>
-
-                    <!-- Grid column -->
-                    <hr class="w-100 clearfix d-md-none" />
-
-                    <!-- Grid column -->
-                    <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mt-3 text-light">
-                        <h6 class="text-uppercase mb-4 font-weight-bold text-light">Location</h6>
-                        <p>support@r&rwares.com</p>
-                        <p> 222 Avenue Tokyo, 727487, Japan </p>
-                        <p>Telephone: 044-456147000</p>
-                    </div>
-                    <!-- Grid column -->
-                </div>
-                <!--Grid row-->
-            </section>
-            <!-- Section: Links -->
-
-            <hr class="my-3">
-
-            <!-- Section: Copyright -->
-
-            <div class="row">
-                <!-- Grid column -->
-                <div class="col-md-12 text-center text-md-center">
-                    <!-- Copyright -->
-                    <div class="p-3 ">
-                        <p class="text-light">Copyright © 2023 R@R Wares Pvt Ltd. All rights reserved.</p>
-                    </div>
-                    <!-- Copyright -->
-                </div>
-                <!-- Grid column -->
-
-                <!-- Grid column -->
-                <div class="col-md-12 text-center">
-                    <!-- Facebook -->
-                    <a class="btn btn-outline-light btn-floating m-1" class="text-light" role="button"><i
-                            class="fab fa-facebook-f"></i></a>
-
-                    <!-- Twitter -->
-                    <a class="btn btn-outline-light btn-floating m-1" class="text-light" role="button"><i
-                            class="fab fa-twitter"></i></a>
-
-                    <!-- Instagram -->
-                    <a class="btn btn-outline-light btn-floating m-1" class="text-light" role="button"><i
-                            class="fab fa-instagram"></i></a>
-                </div>
-                <!-- Grid column -->
-            </div>
-            <!-- Section: Copyright -->
-        </div>
-        <!-- Grid container -->
-    </footer>
-    <!-- Footer -->
-
-    <script>
-        function decrementQuantity(index, productId) {
-            var inputElement = document.getElementById('form' + index);
-            inputElement.stepDown();
-            handleInputChange(inputElement.value, productId);
-        }
-
-        function incrementQuantity(index, productId) {
-            var inputElement = document.getElementById('form' + index);
-            inputElement.stepUp();
-            handleInputChange(inputElement.value, productId);
-        }
-
-        function handleInputChange(newValue, productId) {
-
-            $.ajax({
-                url: `/updateQuantity?qid=${newValue}&productId=${productId}`,
-                method: 'GET',
-            })
-                .then(res => {
-                    if (res.status) {
-                        console.log('Backend response:', responseData);
-                        // window.location.href = '/userCart';
-                    }
+            function handleInputChange(newValue, productId) {
+                $.ajax({
+                    url: `/updateQuantity?qid=${newValue}&productId=${productId}`,
+                    method: 'GET',
                 })
-                .catch(err => {
-                    console.error('There was a problem with the AJAX request:', error);
+                    .then(res => {
+                        if (res.status) {
+                            console.log('Backend response:', res);
+                            // Reload the page
+                            location.reload();
+                        }
+                    })
+                    .catch(err => {
+                        console.error('There was a problem with the AJAX request:', err);
+                    })
+            }
 
-                })
-        }
-
-    </script>
+        </script>
 </body>
 
 </html>

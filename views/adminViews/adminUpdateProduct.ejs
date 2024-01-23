@@ -111,8 +111,16 @@
                 <div class="d-flex justify-content-center mt-3">
                     <div id="image-preview">
                         <% for(let i=0; i<product[0].images.length; i++){ %>
-                            <img src=<%=product[0].images[i] %> style="max-width: 200px; max-height: 100px;">
-                            <% } %>
+                            <div class="image-container">
+                                <img src="<%=product[0].images[i] %>" style="max-width: 200px; max-height: 100px;">
+                                <a onclick="deleteImg('<%= product[0]._id %>', '<%= i %>')">
+                                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <circle cx="10" cy="10" r="10" fill="white"/>
+                                        <path d="M10 0C4.47679 0 0 4.47679 0 10C0 15.5232 4.47679 20 10 20C15.5232 20 20 15.5232 20 10C20 4.47679 15.5232 0 10 0ZM13.7946 12.5321C14.1429 12.8804 14.1429 13.4464 13.7946 13.7946C13.4464 14.1429 12.8804 14.1429 12.5321 13.7946L10 11.2625L7.46786 13.7946C7.11964 14.1429 6.55357 14.1429 6.20536 13.7946C5.85714 13.4464 5.85714 12.8804 6.20536 12.5321L8.7375 10L6.20536 7.46786C5.85714 7.11964 5.85714 6.55357 6.20536 6.20536C6.55357 5.85714 7.11964 5.85714 7.46786 6.20536L10 8.7375L12.5321 6.20536C12.8804 5.85714 13.4464 5.85714 13.7946 6.20536C14.1429 6.55357 14.1429 7.11964 13.7946 7.46786L11.2625 10L13.7946 12.5321Z" fill="#FF0000"/>
+                                    </svg>
+                                </a>
+                            </div>
+                        <% } %>
                     </div>
                 </div>
                 <!--  -->
@@ -155,6 +163,24 @@
         }
 
         document.getElementById('formFileMultiple').addEventListener('change', previewImages);
+   
+        function deleteImg(productId, imageIndex) {
+            fetch(`/adminUpdateProduct/${productId}/deleteImage/${imageIndex}`, {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.reload();
+
+                } else {
+                    console.error(data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
     </script>
 
 </body>

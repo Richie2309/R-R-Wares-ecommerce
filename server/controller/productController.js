@@ -1,6 +1,7 @@
 const Userdb = require('../model/userModel/userModel');
 const Otpdb = require("../model/userModel/otpModel");
 
+// const sharp=require('sharp')
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 const Mailgen = require("mailgen");
@@ -90,7 +91,6 @@ exports.productByCategory = async (req, res) => {
       }
       // Extract filenames from the uploaded files
       const uploadImg = files.map((value) => { return "/uploads/" + value.filename });
-      console.log(uploadImg)
       // Create a new product using the Productdb model
       const newProduct = new Productdb({
         pName: pName,
@@ -102,13 +102,37 @@ exports.productByCategory = async (req, res) => {
         images: uploadImg,
       })
       const data = await newProduct.save();
-      console.log(data)
+      // Apply image cropping using Sharp
+    for (const file of files) {
+      const inputImagePath = path.join(__dirname, '../../../assets', `/uploads/${file.filename}`);
+      const outputImagePath = path.join(__dirname, '../../../assets', `/uploads/resizedImg${file.filename}`);
+
+      // await sharp(inputImagePath)
+      //   .resize(2000, 888, {
+      //     fit: 'cover',
+      //     position: 'centre',
+      //   })
+      //   .toFile(outputImagePath);
+    }
       res.redirect("/adminHome");
     } catch (error) {
       console.error("Error:", error);
       res.status(500).send("Internal server error");
     }
   }
+
+
+
+
+  // await sharp(path.join(__dirname, '../../../assets',`/uploads/${req.files.largeImg[0].filename}`))
+  // .resize(2000, 888, {
+  //     fit: "cover",
+  //     position: "centre",
+  // })
+  // .toFile(path.join(__dirname, '../../../assets',`/uploads/resizedImg${req.files.largeImg[0].filename}`));
+
+
+
   
   exports.showProduct = async (req, res) => {
     try {
@@ -231,3 +255,28 @@ exports.productByCategory = async (req, res) => {
       res.status(500).send('Internal server error');
     }
   }
+
+  exports.deleteProductImage = async (req, res) => {
+    const { productId, imageIndex } = req.params;
+  
+    try {
+      // Fetch the product by ID
+      const product = await Productdb.findById(productId);
+  
+      // Ensure the product and image index are valid
+      if (!product || imageIndex < 0 || imageIndex >= product.images.length) {
+        return res.status(404).json({ error: 'Invalid product or image index' });
+      }
+  
+      // Remove the image at the specified index
+      product.images.splice(imageIndex, 1);
+  
+      // Save the updated product
+      await product.save();
+  
+      res.status(200).json({ success: true, message: 'Image deleted successfully' });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  };

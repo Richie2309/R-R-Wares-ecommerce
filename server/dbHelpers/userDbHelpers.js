@@ -10,6 +10,11 @@ exports.getCartItems = async (userId) => {
     }
     const agg = [
       {
+        $match: {
+          userId: new mongoose.Types.ObjectId(userId)
+        }
+      },
+      {
         '$unwind': {
           'path': '$products'
         }

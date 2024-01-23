@@ -18,7 +18,7 @@ route.get('/adminLogout', adminController.adminLogout)
 
 route.get('/adminHome', adminAuthMiddleware.isAdminAuth, adminRender.adminHome);
 
-// Product MAnage//
+// Product Manage//
 route.get('/adminProductManage', adminAuthMiddleware.isAdminAuth, adminRender.adminProductManage);
 
 route.get('/adminAddProduct', adminAuthMiddleware.isAdminAuth, adminRender.adminAddProduct);
@@ -31,6 +31,8 @@ route.get('/adminRestoreProduct/:id', adminAuthMiddleware.isAdminAuth, productCo
 
 route.get('/adminUpdateProduct/:id', adminAuthMiddleware.isAdminAuth, adminRender.adminUpdateProduct)
 route.post('/adminUpdateProduct/:id',  multer.store.array('images',4), adminAuthMiddleware.isAdminAuth, productController.adminUpdateProduct)
+
+route.post('/adminUpdateProduct/:productId/deleteImage/:imageIndex', productController.deleteProductImage);
 
 //Category Manage
 route.get('/adminCategoryManage', adminAuthMiddleware.isAdminAuth, adminRender.adminCategoryManage);

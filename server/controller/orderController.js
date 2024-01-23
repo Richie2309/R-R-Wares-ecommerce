@@ -12,9 +12,6 @@ const userHelper = require("../dbHelpers/userDbHelpers");
 exports.adminChangeOrderStatus = async (req, res) => {
     try {
         await adminHelper.adminChangeOrderStatus(req.query.orderId, req.query.productId, req.body.orderStatus)
-        // if (!req.body.filter) {
-        //     return res.status(200).redirect("/adminOrderManage");
-        //   }
         res.status(200).redirect(`/adminOrderManage`);
     } catch (err) {
         console.error(err);
@@ -24,9 +21,7 @@ exports.adminChangeOrderStatus = async (req, res) => {
 }
 
 exports.userCancelOrder = async (req, res) => {
-   
     try {
-        
         await userHelper.userCancelOrder(req.query.orderId, req.query.productId);
         req.session.isCancelled = true; 
         return res.status(200).redirect("/userOrderHistory");

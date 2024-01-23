@@ -195,6 +195,30 @@ a{
     }
 }
 
+/* Cart icon number */
+.contain {
+    position: relative;
+}
+
+.badgeCustom {
+    background-color: yellow;
+    color: black;
+    padding: 5px;
+    border-radius: 50%;
+    position: absolute;
+    top: -15px; /* Adjust the top value for positioning */
+    right: -15px; /* Adjust the right value for positioning */
+    width: 20px; /* Set a fixed width for a perfect circle */
+    height: 20px; /* Set a fixed height for a perfect circle */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.count {
+    margin: 0;
+    font-size: 12px;
+}
 
 
 

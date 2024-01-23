@@ -211,3 +211,22 @@ li a{
     background-color: red;
     
 }
+
+.image-container {
+    position: relative;
+    display: inline-block;
+}
+
+.image-container img {
+    max-width: 200px;
+    max-height: 100px;
+    /* Add any additional styling for the image */
+}
+
+.image-container a {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 1; /* Ensure it appears above the image */
+    cursor: pointer; /* Set cursor to pointer on hover */
+}
