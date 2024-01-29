@@ -1,7 +1,7 @@
 const Userdb = require('../model/userModel/userModel');
 const Otpdb = require("../model/userModel/otpModel");
-
-// const sharp=require('sharp')
+const path=require('path')
+const sharp=require('sharp')
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 const Mailgen = require("mailgen");
@@ -103,17 +103,17 @@ exports.productByCategory = async (req, res) => {
       })
       const data = await newProduct.save();
       // Apply image cropping using Sharp
-    for (const file of files) {
-      const inputImagePath = path.join(__dirname, '../../../assets', `/uploads/${file.filename}`);
-      const outputImagePath = path.join(__dirname, '../../../assets', `/uploads/resizedImg${file.filename}`);
+    // for (const file of files) {
+    //   const inputImagePath = path.join(__dirname, '../../../assets', `uploads/${file.filename}`);
+    //   const outputImagePath = path.join(__dirname, '../../../assets', `uploads/resizedImg${file.filename}`);
 
-      // await sharp(inputImagePath)
-      //   .resize(2000, 888, {
-      //     fit: 'cover',
-      //     position: 'centre',
-      //   })
-      //   .toFile(outputImagePath);
-    }
+    //   await sharp(inputImagePath)
+    //     .resize(2000, 888, {
+    //       fit: 'cover',
+    //       position: 'centre',
+    //     })
+    //     .toFile(outputImagePath);
+    // }
       res.redirect("/adminHome");
     } catch (error) {
       console.error("Error:", error);

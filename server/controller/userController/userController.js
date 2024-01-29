@@ -5,6 +5,7 @@ const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 const Mailgen = require("mailgen");
 const { default: mongoose } = require("mongoose");
+const Razorpay = require('razorpay')
 const Categorydb = require('../../model/adminModel/categoryModel')
 const Cartdb = require('../../model/userModel/cartModel')
 const Productdb = require('../../model/adminModel/productModel');
@@ -12,6 +13,11 @@ const { query } = require('express');
 const userAddressdb = require('../../model/userModel/addressModel')
 const Orderdb = require('../../model/userModel/orderModel')
 const userDbHelpers = require("../../dbHelpers/userDbHelpers");
+
+var instance = new Razorpay({
+  key_id: 'rzp_test_IwnjcUU9Jdcian',
+  key_secret: 'IVbX06LxB8oMcuyvF6RZFhxt'
+})
 
 function capitalizeFirstLetter(str) {
   str = str.toLowerCase();
@@ -479,8 +485,11 @@ exports.userEditProfile = async (req, res) => {
 
 
 exports.userCheckout = async (req, res) => {
-  console.log(req.session.isUserAuth);
   try {
+    console.log(req.body)
+    const address = await userDbHelpers.getDefaultAddress(req.session.isUserAuth, req.body.defaultAddress)
+    const valueAddress = address[0].address.structuredAddress
+
     // Get the cart items using the helper function
     const cartProducts = await userDbHelpers.getCartItems(req.session.isUserAuth);
 
@@ -497,16 +506,24 @@ exports.userCheckout = async (req, res) => {
         images: element.pDetail[0].images[0],
       }
     })
+    req.session.totalAmount = req.body.totalAmount
+
     orderItems.forEach(async (element) => {
-      const d = await Productdb.updateOne(
+      await Productdb.updateOne(
         { _id: element.productId },
         { $inc: { units: -element.units } }
       );
     });
 
+    // let tPrice = 100;
+    // orderItems.forEach(async (element) => {
+    //   tPrice += element.units * element.price;
+    // });
+
     const newOrder = new Orderdb({
       userId: req.session.isUserAuth,
       orderItems: orderItems,
+      address: valueAddress,
       paymentMethod:
         req.body.paymentMethod === "cod" ? "cod" : "online"
     });
@@ -516,14 +533,80 @@ exports.userCheckout = async (req, res) => {
       await Cartdb.updateOne(
         { userId: req.session.isUserAuth },
         { $set: { products: [] } }
-      ); // empty cart items
+      );
       req.session.orderSucessPage = true;
-      return res.redirect("/orderSuccess");
+      return res.json({
+        status: 'success',
+        paymentMethod: "cod",
+        url: '/orderSuccess'
+      })
     }
 
-    return res.status(302).redirect('/orderSuccess');
+    if (req.body.paymentMethod === "online") {
+      const options = {
+        amount: req.session.totalAmount * 100,
+        currency: "INR",
+        receipt: "" + newOrder._id,
+      };
+
+      const order = await instance.orders.create(options);
+      // console.log(order);
+      req.session.newOrder = newOrder;
+      return res.status(200).json({
+        success: true,
+        msg: 'order created',
+        key_id: instance.key_id,
+        order: order
+      })
+
+      // const options = {
+      //   amount: tPrice,
+      //   currency: "INR",
+      //   receipt: "" + newOrder._id,
+      // };
+
+      // const order = await instance.orders.create(options);
+      // req.session.newOrder = newOrder;
+
+      // return res.json({
+      //   success: true,
+      //   msg: 'order created',
+      //   key_id: instance.key_id,
+      //   order: order
+      //   // paymentMethod: 'online',
+      // })
+    }
+
   } catch (err) {
     console.error(err);
-    res.status(500).send("Internal server error usercheckout");
+    res.send(err)
   }
 };
+
+exports.onlinePaymentSuccessfull = async (req, res) => {
+  try {
+    const crypto = require("crypto");
+
+    const hmac = crypto.createHmac("sha256", 'IVbX06LxB8oMcuyvF6RZFhxt');
+    hmac.update(
+      req.body.razorpay_order_id + "|" + req.body.razorpay_payment_id
+    );
+
+    if (hmac.digest("hex") === req.body.razorpay_signature) {
+      const newOrder = new Orderdb(req.session.newOrder);
+      await newOrder.save();
+      await Cartdb.updateOne(
+        { userId: req.session.isUserAuth },
+        { $set: { products: [] } }
+      );
+
+      req.session.orderSucessPage = true;
+      return res.status(200).redirect("/orderSuccess");
+    } else {
+      return res.send("Order Failed");
+    }
+  } catch (err) {
+    console.error("order razorpay err", err);
+    res.status(500).send('Internal server error')
+  }
+}

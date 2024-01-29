@@ -227,7 +227,7 @@
                     <h4 class="mb-3">Payment</h4>
 
                     <div class="d-block my-3">
-                        <form id="checkoutForm" action="/userCheckOut" method="POST">
+                        <form id="checkoutForm">
                             <label style="font-weight: bold;">
                                 <input type="radio" name="paymentMethod" value="online" onchange="proceedToBuy()">
                                 Online Payment
@@ -237,6 +237,11 @@
                                 <input type="radio" name="paymentMethod" value="cod" onchange="proceedToBuy()">
                                 Cash on Delivery
                             </label>
+                            <input type="hidden" name="totalAmount" value="<%= cartProducts.reduce((total, item)=> {
+                                return total + (item.pDetail[0].price *
+                                item.products.units);
+                                }, 0) %>">
+                            <input type="hidden" name="defaultAddress" value="<%= userInfo.defaultAddress  %>">
                             <button type="submit" id="proceedToBuyBtn"
                                 class="btn btn-success text-light btn-block btn-lg" style="display: none;">Proceed to
                                 Buy</button>
@@ -248,6 +253,9 @@
         </div>
     </div><br><br>
     <%-include('include/footer')-%>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="/js/onlinePayment.js"></script>
     <script>
         async function setAsDefault(addressId) {
             try {

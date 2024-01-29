@@ -1,4 +1,6 @@
 const { default: mongoose } = require('mongoose');
+const Userdb = require('../model/userModel/userModel');
+const userAddressdb = require('../model/userModel/addressModel')
 const Cartdb = require('../model/userModel/cartModel')
 const Orderdb = require('../model/userModel/orderModel');
 const Productdb = require('../model/adminModel/productModel');
@@ -30,6 +32,40 @@ exports.getCartItems = async (userId) => {
     return await Cartdb.aggregate(agg)
   } catch (err) {
     return err;
+  }
+}
+
+exports.getDefaultAddress = async (userId, addressId) => {
+  try {
+    const agg = [
+      {
+        $match: {
+          userId: new mongoose.Types.ObjectId(userId)
+        }
+      },
+      {
+        $unwind: '$address'
+      },
+      {
+        $match: {
+          'address._id': new mongoose.Types.ObjectId(addressId)
+        }
+      }
+    ];
+    return await userAddressdb.aggregate(agg);
+    // const address = await userAddressdb.aggregate([
+    //   {
+    //     $match: { userId: new mongoose.Types.ObjectId(userId) }
+    //   },
+    //   {
+    //     $unwind: '$address'
+    //   }, {
+    //     $match: {
+    //       'address._id': new mongoose.Types.ObjectId(addressId)
+    //     }
+    //   }
+  } catch (err) {
+    console.log(err);
   }
 }
 

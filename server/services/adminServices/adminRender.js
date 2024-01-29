@@ -2,7 +2,7 @@ const axios = require('axios');
 const { response } = require('express');
 const Productdb = require('../../model/adminModel/productModel');
 const { ExpressValidator } = require('express-validator');
-const adminHelper = require('../../dbHelpers/adminDbHelpers')
+const adminDbHelpers = require('../../dbHelpers/adminDbHelpers')
 
 // exports.adminSignin=(req,res)=>{
 //     res.render('adminViews/adminSignin')
@@ -34,8 +34,15 @@ exports.adminSignin = (req, res) => {
 }
 
 exports.adminHome = async (req, res) => {
-  const users = await axios.post(`http://localhost:${process.env.PORT}/api/getAllUser`);
-  res.render('adminViews/adminHome', { users: users.data });
+  try {
+    const dashDetails = await adminDbHelpers.dashDetails()
+    const orders = await adminDbHelpers.getAllOrders(req.query.filter);
+    const users = await axios.post(`http://localhost:${process.env.PORT}/api/getAllUser`);
+
+    res.render('adminViews/adminHome', { users: users.data, orders, dashDetails:dashDetails });
+  } catch (err) {
+    console.log(err);
+  }
 }
 
 //product manage
@@ -221,7 +228,7 @@ exports.adminUserManage = async (req, res) => {
 //Order Manage
 exports.adminOrderManage = async (req, res) => {
   try {
-    const orders = await adminHelper.getAllOrders(req.query.filter);
+    const orders = await adminDbHelpers.getAllOrders(req.query.filter);
     console.log('req.query.filter', req.query.filter);
     console.log('orders', orders.userInfo);
     res.status(200).render('adminViews/adminOrderManage', { orders, filter: req.query.filter })

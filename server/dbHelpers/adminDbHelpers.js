@@ -41,17 +41,45 @@ exports.getAllOrders = async (filter) => {
     }
 }
 
-// exports.adminOrderManage = async (orderId, productId, orderStatus) => {
-//     try {
-//         if (orderStatus === 'Cancelled') {
-//             const units = await Orderdb.findOne({ $and: [{ _id: new mongoose.Types.ObjectId(orderId) }, { 'orderItems.productId': productId }] }, { 'orderItems.$': 1, _id: 0 });
-//             await Productdb.updateOne({ productId: productId }, { $inc: { units: units.orderItems[0].units } });
-//         }
-//         return await Orderdb.updateOne({ $and: [{ _id: new mongoose.Types.ObjectId(orderId) }, { "orderItems.productId": productId }] }, { $set: { "orderItems.$.orderStatus": orderStatus } });
-//     } catch (err) {
-//         console.log(err);
-//     }
-// }
+exports.dashDetails = async () => {
+    try {
+        const [totalSales] = await Orderdb.aggregate([
+            {
+                $unwind: {
+                    path: "$orderItems",
+                },
+            },
+            {
+                $match: {
+                    $or: [
+                        { "orderItems.orderStatus": "Delivered" },
+                        { paymentMethod: "online" },
+                    ],
+                },
+            },
+            {
+                $group: {
+                    _id: null,
+                    profit: {
+                        $sum: {
+                            $multiply: ["$orderItems.price", "$orderItems.units"],
+                        },
+                    },
+                },
+            },
+            {
+                $project: {
+                    _id: 0,
+                },
+            }
+        ])
+        console.log('totl prft', totalSales?.profit);
+        return { profit: totalSales?.profit }
+
+    } catch (err) {
+        console.log(err);
+    }
+}
 
 exports.adminChangeOrderStatus = async (orderId, productId, orderStatus) => {
     try {

@@ -16,7 +16,9 @@ route.post('/adminSignin', adminController.adminSignin)
 
 route.get('/adminLogout', adminController.adminLogout)
 
+//Dahsboard
 route.get('/adminHome', adminAuthMiddleware.isAdminAuth, adminRender.adminHome);
+route.post('/api/getDetailsChart', adminAuthMiddleware.isAdminAuth, adminController.getDetailsChart )
 
 // Product Manage//
 route.get('/adminProductManage', adminAuthMiddleware.isAdminAuth, adminRender.adminProductManage);
