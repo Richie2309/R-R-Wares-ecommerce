@@ -1,5 +1,5 @@
+const dotenv = require('dotenv').config();
 const express = require('express')
-const dotenv = require('dotenv')
 const morgan = require('morgan')
 const path = require('path')
 const session = require('express-session')
@@ -11,8 +11,7 @@ const app = express()
 const userRoutes=require('./server/routes/userRoutes/userRoutes');
 const adminRoutes=require('./server/routes/adminRoutes/adminRoutes');
 
-dotenv.config({ path: 'config.env' })
-const PORT = process.env.PORT || 8000
+const PORT = process.env.PORT || 8000 
 
 //log requests
 app.use(morgan('tiny'))
